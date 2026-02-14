@@ -44,7 +44,7 @@ func GetAdmitidos(idPeriodo int64, nivel string, idProyecto int64, periodoValor 
 		encodedEstadoInscripcion := url.QueryEscape(estadoInscripcion)
 		errInscripcion := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+fmt.Sprintf("inscripcion?query=Activo:true,ProgramaAcademicoId:%v,PeriodoId:%v,EstadoInscripcionId__Nombre:%v&sortby=NotaFinal&order=desc&limit=0", idProyecto, idPeriodo, encodedEstadoInscripcion), &inscripcion)
 		if errInscripcion != nil && fmt.Sprintf("%v", inscripcion) == "[map[]]" {
-			errInscripcion = errInscripcion
+			// errInscripcion = errInscripcion
 			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
 			return APIResponseDTO
 		}
@@ -56,7 +56,7 @@ func GetAdmitidos(idPeriodo int64, nivel string, idProyecto int64, periodoValor 
 		fmt.Println("http://" + beego.AppConfig.String("InscripcionService") + fmt.Sprintf("inscripcion?query=Activo:true,ProgramaAcademicoId:%v,PeriodoId:%v,EstadoInscripcionId__Nombre:ADMITIDO&sortby=NotaFinal&order=desc&limit=0", idProyecto, idPeriodo))
 		errInscripcion := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+fmt.Sprintf("inscripcion?query=Activo:true,ProgramaAcademicoId:%v,PeriodoId:%v,EstadoInscripcionId__Nombre:ADMITIDO&sortby=NotaFinal&order=desc&limit=0", idProyecto, idPeriodo), &inscripcion)
 		if errInscripcion != nil && fmt.Sprintf("%v", inscripcion) == "[map[]]" {
-			errInscripcion = errInscripcion
+			// errInscripcion = errInscripcion
 			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
 			return APIResponseDTO
 		}

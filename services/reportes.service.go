@@ -166,12 +166,12 @@ func ListarDataInscripcionEvaluacion(dataOrganizada []map[string]interface{}, re
 							}
 
 							//Estilos aplicandose
-							file.MergeCell("Hoja1", "B"+strconv.Itoa(1), string('F'+CantidadColumnas)+strconv.Itoa(5))
-							file.MergeCell("Hoja1", "A"+strconv.Itoa(6), string('F'+CantidadColumnas)+strconv.Itoa(6))
-							file.SetCellStyle("Hoja1", "A"+strconv.Itoa(6), string('F'+CantidadColumnas)+strconv.Itoa(6), styleCalumnID) // Combina las celdas
-							file.SetCellStyle("Hoja1", "F"+strconv.Itoa(7), string('F'+CantidadColumnas)+strconv.Itoa(7), styleCalumnID) // Aplica el estilo
-							file.SetCellStyle("Hoja1", "A"+strconv.Itoa(indx), "E"+strconv.Itoa(indx), styleID)                          // Aplica el estilo
-							file.SetCellStyle("Hoja1", "F"+strconv.Itoa(indx), string('F'+CantidadColumnas)+strconv.Itoa(indx), styleID) // Aplica el estilo
+							file.MergeCell("Hoja1", "B"+strconv.Itoa(1), fmt.Sprint('F'+CantidadColumnas)+strconv.Itoa(5))
+							file.MergeCell("Hoja1", "A"+strconv.Itoa(6), fmt.Sprint('F'+CantidadColumnas)+strconv.Itoa(6))
+							file.SetCellStyle("Hoja1", "A"+strconv.Itoa(6), fmt.Sprint('F'+CantidadColumnas)+strconv.Itoa(6), styleCalumnID) // Combina las celdas
+							file.SetCellStyle("Hoja1", "F"+strconv.Itoa(7), fmt.Sprint('F'+CantidadColumnas)+strconv.Itoa(7), styleCalumnID) // Aplica el estilo
+							file.SetCellStyle("Hoja1", "A"+strconv.Itoa(indx), "E"+strconv.Itoa(indx), styleID)                              // Aplica el estilo
+							file.SetCellStyle("Hoja1", "F"+strconv.Itoa(indx), fmt.Sprint('F'+CantidadColumnas)+strconv.Itoa(indx), styleID) // Aplica el estilo
 
 						}
 

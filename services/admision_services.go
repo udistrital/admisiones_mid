@@ -889,7 +889,7 @@ func ConsultaCriterios(dataPeriodo map[string]interface{}, dataProyectos []map[s
 		criterio := make([]map[string]interface{}, 0)
 		proyectoId := proyecto["Id"].(float64)
 		proyectoIdString := strconv.FormatFloat(proyectoId, 'f', -1, 64)
-		errCriterio := request.GetJson(beego.AppConfig.String("EvaluacionInscripcionService")+"requisito_programa_academico?query=ProgramaAcademicoId:"+proyectoIdString+",PeriodoId:"+IdPeriodoString, &criterio)
+		errCriterio := request.GetJson("http://"+beego.AppConfig.String("EvaluacionInscripcionService")+"requisito_programa_academico?query=ProgramaAcademicoId:"+proyectoIdString+",PeriodoId:"+IdPeriodoString, &criterio)
 		if errCriterio == nil {
 			for _, dbCriterio := range dbDataCriterios {
 				criterioId := dbCriterio["Id"].(float64)
@@ -918,7 +918,7 @@ func ConsultaSuite(dataProyectos []map[string]interface{}, tipoInscripcion []map
 			inscripcionId := inscripcion["Id"].(float64)
 			IdInscripcionString := strconv.FormatFloat(inscripcionId, 'f', -1, 64)
 			suite := make(map[string]interface{})
-			errSuite := request.GetJson(beego.AppConfig.String("EvaluacionInscripcionService")+"tags_por_dependencia?query=Activo:true,PeriodoId:"+IdPeriodoString+",DependenciaId:"+proyectoIdString+",TipoInscripcionId:"+IdInscripcionString, &suite)
+			errSuite := request.GetJson("http://"+beego.AppConfig.String("EvaluacionInscripcionService")+"tags_por_dependencia?query=Activo:true,PeriodoId:"+IdPeriodoString+",DependenciaId:"+proyectoIdString+",TipoInscripcionId:"+IdInscripcionString, &suite)
 			if errSuite == nil {
 				if data, ok := suite["Data"].([]interface{}); ok {
 					if len(data) > 0 {
@@ -1052,7 +1052,7 @@ func Criterio(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var errorGetAll = false
 
 	//GET Criterios y subcriterio
-	errCriterio := request.GetJson(beego.AppConfig.String("EvaluacionInscripcionService")+"requisito?limit=0&query=Activo:true ", &datacriterios)
+	errCriterio := request.GetJson("http://"+beego.AppConfig.String("EvaluacionInscripcionService")+"requisito?limit=0&query=Activo:true ", &datacriterios)
 	if errCriterio == nil {
 		//Se dividen en criterios y subcriterios
 		for _, criterio := range datacriterios {
@@ -2501,7 +2501,7 @@ func calcularPonderadoSinSubcriterios(requisito map[string]interface{}, Porcenta
 func CriteriosIcfesPost(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var CriterioIcfes map[string]interface{}
 	var alerta models.Alert
-	alertas := append([]interface{}{"Response:"})
+	alertas := []interface{}{"Response:"}
 	if err := json.Unmarshal(data, &CriterioIcfes); err == nil {
 
 		criterioProyecto := make([]map[string]interface{}, 0)
@@ -2630,7 +2630,7 @@ func CuposAdmision(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 func CambioEstadoAspirante(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var consultaestado map[string]interface{}
 	EstadoActulizado := "Estados Actualizados"
-	alertas := append([]interface{}{"Response:"})
+	alertas := []interface{}{"Response:"}
 
 	if err := json.Unmarshal(data, &consultaestado); err == nil {
 		Id_periodo := consultaestado["Periodo"].(map[string]interface{})["Id"]
