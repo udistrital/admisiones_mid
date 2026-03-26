@@ -57,7 +57,7 @@ func generateUniqueEmail(primer_nombre, segundo_nombre, primer_apellido, segundo
 func isEmailUniqueInDatabase(email string, PrimerNombre string, SegundoNombre string, PrimerApellido string, SegundoApellido string) bool {
 	var infoComplementaria []map[string]interface{}
 
-	errInfoComplementaria := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+fmt.Sprintf("info_complementaria_tercero?query=Dato__icontains:%v", email), &infoComplementaria)
+	errInfoComplementaria := request.GetJson(beego.AppConfig.String("TercerosService")+fmt.Sprintf("info_complementaria_tercero?query=Dato__icontains:%v", email), &infoComplementaria)
 	if errInfoComplementaria == nil && len(infoComplementaria) > 0 {
 		for _, info := range infoComplementaria {
 			if info["TerceroId"].(map[string]interface{})["PrimerNombre"] == PrimerNombre && SegundoNombre == info["TerceroId"].(map[string]interface{})["SegundoNombre"] && PrimerApellido == info["TerceroId"].(map[string]interface{})["PrimerApellido"] && SegundoApellido == info["TerceroId"].(map[string]interface{})["SegundoApellido"] {
@@ -72,7 +72,7 @@ func isEmailUniqueInDatabase(email string, PrimerNombre string, SegundoNombre st
 func SugerenciaCorreosUD(idPeriodo int64, Opcion int64) requestresponse.APIResponse {
 	var listado []map[string]interface{}
 	var inscripcion []map[string]interface{}
-	errInscripcion := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+fmt.Sprintf("inscripcion?query=Activo:true,PeriodoId:%v,Opcion:%v,EstadoInscripcionId.Id:11&limit=0", idPeriodo, Opcion), &inscripcion)
+	errInscripcion := request.GetJson(beego.AppConfig.String("InscripcionService")+fmt.Sprintf("inscripcion?query=Activo:true,PeriodoId:%v,Opcion:%v,EstadoInscripcionId.Id:11&limit=0", idPeriodo, Opcion), &inscripcion)
 	if errInscripcion == nil && fmt.Sprintf("%v", inscripcion) != "[map[]]" {
 		for _, inscrip := range inscripcion {
 
@@ -81,25 +81,25 @@ func SugerenciaCorreosUD(idPeriodo int64, Opcion int64) requestresponse.APIRespo
 			var codigoProyecto string
 			var nombreFacultad string
 			var proyecto map[string]interface{}
-			errProyecto := request.GetJson("http://"+beego.AppConfig.String("ProyectoAcademicoService")+fmt.Sprintf("proyecto_academico_institucion/%v", inscrip["ProgramaAcademicoId"]), &proyecto)
+			errProyecto := request.GetJson(beego.AppConfig.String("ProyectoAcademicoService")+fmt.Sprintf("proyecto_academico_institucion/%v", inscrip["ProgramaAcademicoId"]), &proyecto)
 			if errProyecto == nil && proyecto["Status"] != "404" {
 				var facultad []interface{}
 				nombreProyecto = proyecto["Nombre"].(string)
 				codigoProyecto = proyecto["Codigo"].(string)
-				errFalcultad := request.GetJson("http://"+beego.AppConfig.String("OikosService")+fmt.Sprintf("dependencia_padre?query=HijaId:%v", proyecto["DependenciaId"]), &facultad)
+				errFalcultad := request.GetJson(beego.AppConfig.String("OikosService")+fmt.Sprintf("dependencia_padre?query=HijaId:%v", proyecto["DependenciaId"]), &facultad)
 				if errFalcultad == nil && fmt.Sprintf("%v", facultad) != "[]" {
 					nombreFacultad = facultad[0].(map[string]interface{})["PadreId"].(map[string]interface{})["Nombre"].(string)
 				}
 			}
 
 			var tercero map[string]interface{}
-			errTercero := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+fmt.Sprintf("tercero/%v", inscrip["PersonaId"]), &tercero)
+			errTercero := request.GetJson(beego.AppConfig.String("TercerosService")+fmt.Sprintf("tercero/%v", inscrip["PersonaId"]), &tercero)
 			if errTercero == nil && tercero["Status"] != "404" {
 
 				// Obtener datos identificación
 				var numeroIdentificacion string
 				var identificacion []interface{}
-				errDatosIdentificacion := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+fmt.Sprintf("datos_identificacion?query=TerceroId:%v,Activo:true&sortby=id&order=desc&limit=1&fields=Numero", tercero["Id"]), &identificacion)
+				errDatosIdentificacion := request.GetJson(beego.AppConfig.String("TercerosService")+fmt.Sprintf("datos_identificacion?query=TerceroId:%v,Activo:true&sortby=id&order=desc&limit=1&fields=Numero", tercero["Id"]), &identificacion)
 				if errDatosIdentificacion == nil && fmt.Sprintf("%v", identificacion) != "[map[]]" {
 					numeroIdentificacion = identificacion[0].(map[string]interface{})["Numero"].(string)
 				}
@@ -107,7 +107,7 @@ func SugerenciaCorreosUD(idPeriodo int64, Opcion int64) requestresponse.APIRespo
 				// Obtener telefono
 				var numeroTelefonico string
 				var telefono []interface{}
-				errTelefono := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+fmt.Sprintf("info_complementaria_tercero?query=TerceroId:%v,InfoComplementariaId.Nombre:TELEFONO,Activo:true&sortby=id&order=desc&limit=1&fields=Dato", tercero["Id"]), &telefono)
+				errTelefono := request.GetJson(beego.AppConfig.String("TercerosService")+fmt.Sprintf("info_complementaria_tercero?query=TerceroId:%v,InfoComplementariaId.Nombre:TELEFONO,Activo:true&sortby=id&order=desc&limit=1&fields=Dato", tercero["Id"]), &telefono)
 				if errTelefono == nil && fmt.Sprintf("%v", telefono) != "[map[]]" {
 					var telefonos map[string]interface{}
 					err := json.Unmarshal([]byte(telefono[0].(map[string]interface{})["Dato"].(string)), &telefonos)

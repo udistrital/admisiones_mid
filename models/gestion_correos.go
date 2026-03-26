@@ -10,7 +10,7 @@ import (
 func solicitudDatoIdentifGetLista(inscrip map[string]interface{}, datoIdentTercero *map[string]interface{}) {
 	idTercero := inscrip["TerceroId"].(string)
 	var tercero map[string]interface{}
-	errTercero := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+fmt.Sprintf("tercero/%v", idTercero), &tercero)
+	errTercero := request.GetJson(beego.AppConfig.String("TercerosService")+fmt.Sprintf("tercero/%v", idTercero), &tercero)
 	if errTercero == nil {
 		(*datoIdentTercero)["PrimerNombre"] = tercero["PrimerNombre"]
 		(*datoIdentTercero)["SegundoNombre"] = tercero["SegundoNombre"]

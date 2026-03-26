@@ -23,7 +23,7 @@ func ListarLiquidacionEstudiantes(idPeriodo int64, idProyecto int64) (APIRespons
 	//Obtener Datos del periodo
 	var periodo map[string]interface{}
 	fmt.Println("http://" + beego.AppConfig.String("ParametrosService") + fmt.Sprintf("periodo/%v", idPeriodo))
-	errPeriodo := request.GetJson("http://"+beego.AppConfig.String("ParametrosService")+fmt.Sprintf("periodo/%v", idPeriodo), &periodo)
+	errPeriodo := request.GetJson(beego.AppConfig.String("ParametrosService")+fmt.Sprintf("periodo/%v", idPeriodo), &periodo)
 	if errPeriodo != nil || fmt.Sprintf("%v", periodo) == "[map[]]" {
 		return helpers.ErrEmiter(errPeriodo, fmt.Sprintf("%v", periodo))
 	}
@@ -34,12 +34,12 @@ func ListarLiquidacionEstudiantes(idPeriodo int64, idProyecto int64) (APIRespons
 	var facultad map[string]interface{}
 
 	var proyecto map[string]interface{}
-	errProyecto := request.GetJson("http://"+beego.AppConfig.String("ProyectoAcademicoService")+fmt.Sprintf("proyecto_academico_institucion/%v", idProyecto), &proyecto)
+	errProyecto := request.GetJson(beego.AppConfig.String("ProyectoAcademicoService")+fmt.Sprintf("proyecto_academico_institucion/%v", idProyecto), &proyecto)
 	if errProyecto != nil || fmt.Sprintf("%v", proyecto) == "map[]" {
 		return helpers.ErrEmiter(errProyecto, fmt.Sprintf("%v", proyecto))
 	} else {
 		//Obtener Datos de la facultad
-		errFacultad := request.GetJson("http://"+beego.AppConfig.String("OikosService")+fmt.Sprintf("dependencia/%v", proyecto["FacultadId"]), &facultad)
+		errFacultad := request.GetJson(beego.AppConfig.String("OikosService")+fmt.Sprintf("dependencia/%v", proyecto["FacultadId"]), &facultad)
 		if errFacultad != nil || fmt.Sprintf("%v", facultad) == "map[]" {
 			return helpers.ErrEmiter(errFacultad, fmt.Sprintf("%v", facultad))
 		}
@@ -47,7 +47,7 @@ func ListarLiquidacionEstudiantes(idPeriodo int64, idProyecto int64) (APIRespons
 
 	//Inscripciones de admitidos
 	var inscripciones []map[string]interface{}
-	errInscripciones := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+fmt.Sprintf("inscripcion?query=EstadoInscripcionId__Nombre:ADMITIDO,Activo:true,ProgramaAcademicoId:%v,PeriodoId:%v", idProyecto, idPeriodo), &inscripciones)
+	errInscripciones := request.GetJson(beego.AppConfig.String("InscripcionService")+fmt.Sprintf("inscripcion?query=EstadoInscripcionId__Nombre:ADMITIDO,Activo:true,ProgramaAcademicoId:%v,PeriodoId:%v", idProyecto, idPeriodo), &inscripciones)
 	if errInscripciones != nil || fmt.Sprintf("%v", inscripciones) == "map[]" {
 		return helpers.ErrEmiter(errInscripciones, fmt.Sprintf("%v", inscripciones))
 	}
@@ -70,30 +70,30 @@ func ListarLiquidacionEstudiantes(idPeriodo int64, idProyecto int64) (APIRespons
 		var correos []string
 
 		// Obtener datos básicos del tercero
-		errTercero := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+fmt.Sprintf("tercero?query=Id:%v", inscripcion["PersonaId"]), &tercero)
+		errTercero := request.GetJson(beego.AppConfig.String("TercerosService")+fmt.Sprintf("tercero?query=Id:%v", inscripcion["PersonaId"]), &tercero)
 		if errTercero != nil || fmt.Sprintf("%v", tercero) == "[map[]]" {
 			return helpers.ErrEmiter(errTercero, fmt.Sprintf("%v", tercero))
 		}
 
 		// Obtener documento del tercero
-		errTerceroDocumento := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+fmt.Sprintf("datos_identificacion?query=TipoDocumentoId__CodigoAbreviacion:CC,Activo:true,TerceroId:%v", inscripcion["PersonaId"]), &terceroDocumento)
+		errTerceroDocumento := request.GetJson(beego.AppConfig.String("TercerosService")+fmt.Sprintf("datos_identificacion?query=TipoDocumentoId__CodigoAbreviacion:CC,Activo:true,TerceroId:%v", inscripcion["PersonaId"]), &terceroDocumento)
 		if errTerceroDocumento != nil || fmt.Sprintf("%v", tercero) == "[map[]]" {
 			return helpers.ErrEmiter(errTerceroDocumento, fmt.Sprintf("%v", terceroDocumento))
 		}
 
 		// Obtener código del tercero
-		errTerceroCodigo := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+fmt.Sprintf("datos_identificacion?query=TipoDocumentoId__CodigoAbreviacion:CODE,Activo:true,TerceroId:%v,Numero__contains:%v", inscripcion["PersonaId"], codigoBase), &terceroCodigo)
+		errTerceroCodigo := request.GetJson(beego.AppConfig.String("TercerosService")+fmt.Sprintf("datos_identificacion?query=TipoDocumentoId__CodigoAbreviacion:CODE,Activo:true,TerceroId:%v,Numero__contains:%v", inscripcion["PersonaId"], codigoBase), &terceroCodigo)
 		if errTerceroCodigo != nil || fmt.Sprintf("%v", tercero) == "[map[]]" {
 			return helpers.ErrEmiter(errTerceroCodigo, fmt.Sprintf("%v", terceroCodigo))
 		}
 
 		//Obtener correo del tercero
-		errTerceroCorreo := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+fmt.Sprintf("info_complementaria_tercero?query=InfoComplementariaId__Id:53,TerceroId__Id:%v", inscripcion["PersonaId"]), &terceroCorreo)
+		errTerceroCorreo := request.GetJson(beego.AppConfig.String("TercerosService")+fmt.Sprintf("info_complementaria_tercero?query=InfoComplementariaId__Id:53,TerceroId__Id:%v", inscripcion["PersonaId"]), &terceroCorreo)
 		if errTerceroCorreo != nil || fmt.Sprintf("%v", terceroCorreo) == "[map[]]" {
 			terceroCorreo[0]["Dato"] = terceroCorreo[0]["Dato"]
 		}
 
-		errTerceroCorreoAlt := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+fmt.Sprintf("info_complementaria_tercero?query=InfoComplementariaId__Id:253,TerceroId__Id:%v", inscripcion["PersonaId"]), &terceroCorreoAlt)
+		errTerceroCorreoAlt := request.GetJson(beego.AppConfig.String("TercerosService")+fmt.Sprintf("info_complementaria_tercero?query=InfoComplementariaId__Id:253,TerceroId__Id:%v", inscripcion["PersonaId"]), &terceroCorreoAlt)
 		if errTerceroCorreoAlt != nil || fmt.Sprintf("%v", terceroCorreoAlt) == "[map[]]" {
 			terceroCorreoAlt[0]["Dato"] = terceroCorreoAlt[0]["Dato"]
 		}
@@ -126,7 +126,7 @@ func ListarLiquidacionEstudiantes(idPeriodo int64, idProyecto int64) (APIRespons
 
 		// Obtener descuentos
 		fmt.Println("http://" + beego.AppConfig.String("DescuentosService") + fmt.Sprintf("solicitud_descuento?query=Activo:true,TerceroId:%v,PeriodoId:%v", inscripcion["PersonaId"], idPeriodo))
-		errDescuentos := request.GetJson("http://"+beego.AppConfig.String("DescuentosService")+fmt.Sprintf("solicitud_descuento?query=Activo:true,TerceroId:%v,PeriodoId:%v", inscripcion["PersonaId"], idPeriodo), &descuentos)
+		errDescuentos := request.GetJson(beego.AppConfig.String("DescuentosService")+fmt.Sprintf("solicitud_descuento?query=Activo:true,TerceroId:%v,PeriodoId:%v", inscripcion["PersonaId"], idPeriodo), &descuentos)
 		if errDescuentos != nil || fmt.Sprintf("%v", descuentos) == "[map[]]" {
 			return helpers.ErrEmiter(errDescuentos, fmt.Sprintf("%v", descuentos))
 		}
@@ -180,7 +180,7 @@ func CrearLiquidacion(data []byte) (APIResponseDTO requestresponse.APIResponse) 
 		//var guardada map[string]interface{}
 		nuevaLiquidacion = dataLiquidacion
 
-		errLiquidacion := request.SendJson("http://"+beego.AppConfig.String("liquidacionService")+"liquidacion/", "POST", &nuevaLiquidacion, dataLiquidacion)
+		errLiquidacion := request.SendJson(beego.AppConfig.String("liquidacionService")+"liquidacion/", "POST", &nuevaLiquidacion, dataLiquidacion)
 		if errLiquidacion == nil {
 			fmt.Println(dataLiquidacion)
 
@@ -209,7 +209,7 @@ func CrearLiquidacion(data []byte) (APIResponseDTO requestresponse.APIResponse) 
 						}
 						fmt.Println(dataConcepto)
 
-						errConcepto := request.SendJson("http://"+beego.AppConfig.String("liquidacionService")+"liquidacion-detalle/", "POST", &nuevoConcepto, dataConcepto)
+						errConcepto := request.SendJson(beego.AppConfig.String("liquidacionService")+"liquidacion-detalle/", "POST", &nuevoConcepto, dataConcepto)
 						if errConcepto != nil {
 							//errSaveAll = true
 						}
@@ -241,7 +241,7 @@ func CrearLiquidacion(data []byte) (APIResponseDTO requestresponse.APIResponse) 
 							reciboSolicitud.Header("Accept", "application/json")
 							reciboSolicitud.Header("Content-Type", "application/json")
 							reciboSolicitud.JSONBody(objTransaccion)
-							request.SendJson("http://"+beego.AppConfig.String("GenerarReciboJbpmService")+"recibosPagoProxy", "POST", &NuevoRecibo, objTransaccion)
+							request.SendJson(beego.AppConfig.String("GenerarReciboJbpmService")+"recibosPagoProxy", "POST", &NuevoRecibo, objTransaccion)
 							if errRecibo := reciboSolicitud.ToJSON(&NuevoRecibo); errRecibo == nil {
 								var inscripcionRealizada map[string]interface{}
 								inscripcionRealizada["ReciboInscripcion"] = fmt.Sprintf("%v/%v", NuevoRecibo["creaTransaccionResponse"].(map[string]interface{})["secuencia"], NuevoRecibo["creaTransaccionResponse"].(map[string]interface{})["anio"])
@@ -255,7 +255,7 @@ func CrearLiquidacion(data []byte) (APIResponseDTO requestresponse.APIResponse) 
 									"recibo_id": inscripcionRealizada["id"].(float64),
 								}
 
-								errEtiqueta := request.SendJson("http://"+beego.AppConfig.String("liquidacionService")+"liquidacion-recibo/", "POST", &nuevoRecibo, dataRecibo)
+								errEtiqueta := request.SendJson(beego.AppConfig.String("liquidacionService")+"liquidacion-recibo/", "POST", &nuevoRecibo, dataRecibo)
 								if errEtiqueta != nil {
 									errSaveAll = true
 								}
@@ -295,7 +295,7 @@ func GetAllLiquidaciones() (APIResponseDTO requestresponse.APIResponse) {
 	wge := new(errgroup.Group)
 	var mutex sync.Mutex // Mutex para proteger el acceso a resultados
 
-	errLiquidacion := request.GetJson("http://"+beego.AppConfig.String("liquidacionService")+fmt.Sprintf("liquidacion?=activo:true&limit=0"), &liquidacion)
+	errLiquidacion := request.GetJson(beego.AppConfig.String("liquidacionService")+fmt.Sprintf("liquidacion?=activo:true&limit=0"), &liquidacion)
 	if errLiquidacion == nil {
 
 		if data, ok := liquidacion.(map[string]interface{}); ok {
@@ -317,7 +317,7 @@ func GetAllLiquidaciones() (APIResponseDTO requestresponse.APIResponse) {
 
 							// Obtener detalles de liquidación para esta liquidación
 							var liqDetalles interface{}
-							errLiqDetalle := request.GetJson("http://"+beego.AppConfig.String("liquidacionService")+fmt.Sprintf("liquidacion-detalle?liquidacion_id=%v", liquidacionData["_id"]), &liqDetalles)
+							errLiqDetalle := request.GetJson(beego.AppConfig.String("liquidacionService")+fmt.Sprintf("liquidacion-detalle?liquidacion_id=%v", liquidacionData["_id"]), &liqDetalles)
 							if errLiqDetalle == nil {
 								//fmt.Println("Detalles de liquidación obtenidos con éxito:", liqDetalles)
 
@@ -352,7 +352,7 @@ func GetAllLiquidaciones() (APIResponseDTO requestresponse.APIResponse) {
 
 							// Obtener recibo de liquidación para esta liquidación
 							var liqRecibo interface{}
-							errLiqRecibo := request.GetJson("http://"+beego.AppConfig.String("liquidacionService")+fmt.Sprintf("liquidacion-recibo?liquidacion_id=%v", liquidacionData["_id"]), &liqRecibo)
+							errLiqRecibo := request.GetJson(beego.AppConfig.String("liquidacionService")+fmt.Sprintf("liquidacion-recibo?liquidacion_id=%v", liquidacionData["_id"]), &liqRecibo)
 							if errLiqRecibo == nil {
 								if data, ok := liqRecibo.(map[string]interface{}); ok {
 									if recibos, ok := data["Data"].([]interface{}); ok {

@@ -42,7 +42,7 @@ func GetAdmitidos(idPeriodo int64, nivel string, idProyecto int64, periodoValor 
 	if nivel == "Pregrado" {
 		estadoInscripcion := "ADMITIDO LEGALIZADO"
 		encodedEstadoInscripcion := url.QueryEscape(estadoInscripcion)
-		errInscripcion := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+fmt.Sprintf("inscripcion?query=Activo:true,ProgramaAcademicoId:%v,PeriodoId:%v,EstadoInscripcionId__Nombre:%v&sortby=NotaFinal&order=desc&limit=0", idProyecto, idPeriodo, encodedEstadoInscripcion), &inscripcion)
+		errInscripcion := request.GetJson(beego.AppConfig.String("InscripcionService")+fmt.Sprintf("inscripcion?query=Activo:true,ProgramaAcademicoId:%v,PeriodoId:%v,EstadoInscripcionId__Nombre:%v&sortby=NotaFinal&order=desc&limit=0", idProyecto, idPeriodo, encodedEstadoInscripcion), &inscripcion)
 		if errInscripcion != nil && fmt.Sprintf("%v", inscripcion) == "[map[]]" {
 			// errInscripcion = errInscripcion
 			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
@@ -54,7 +54,7 @@ func GetAdmitidos(idPeriodo int64, nivel string, idProyecto int64, periodoValor 
 	if nivel == "Posgrado" {
 
 		fmt.Println("http://" + beego.AppConfig.String("InscripcionService") + fmt.Sprintf("inscripcion?query=Activo:true,ProgramaAcademicoId:%v,PeriodoId:%v,EstadoInscripcionId__Nombre:ADMITIDO&sortby=NotaFinal&order=desc&limit=0", idProyecto, idPeriodo))
-		errInscripcion := request.GetJson("http://"+beego.AppConfig.String("InscripcionService")+fmt.Sprintf("inscripcion?query=Activo:true,ProgramaAcademicoId:%v,PeriodoId:%v,EstadoInscripcionId__Nombre:ADMITIDO&sortby=NotaFinal&order=desc&limit=0", idProyecto, idPeriodo), &inscripcion)
+		errInscripcion := request.GetJson(beego.AppConfig.String("InscripcionService")+fmt.Sprintf("inscripcion?query=Activo:true,ProgramaAcademicoId:%v,PeriodoId:%v,EstadoInscripcionId__Nombre:ADMITIDO&sortby=NotaFinal&order=desc&limit=0", idProyecto, idPeriodo), &inscripcion)
 		if errInscripcion != nil && fmt.Sprintf("%v", inscripcion) == "[map[]]" {
 			// errInscripcion = errInscripcion
 			APIResponseDTO = requestresponse.APIResponseDTO(false, 404, nil, "No data found")
@@ -83,7 +83,7 @@ func GetAdmitidos(idPeriodo int64, nivel string, idProyecto int64, periodoValor 
 				}
 
 				var datoIdentif []map[string]interface{}
-				errDatoIdentif := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+fmt.Sprintf("datos_identificacion?query=TerceroId:%v", inscrip["PersonaId"]), &datoIdentif)
+				errDatoIdentif := request.GetJson(beego.AppConfig.String("TercerosService")+fmt.Sprintf("datos_identificacion?query=TerceroId:%v", inscrip["PersonaId"]), &datoIdentif)
 				if errDatoIdentif == nil && fmt.Sprintf("%v", datoIdentif) != "[map[]]" {
 					datoIdentTercero["PrimerNombre"] = datoIdentif[0]["TerceroId"].(map[string]interface{})["PrimerNombre"]
 					datoIdentTercero["SegundoNombre"] = datoIdentif[0]["TerceroId"].(map[string]interface{})["SegundoNombre"]
@@ -92,7 +92,7 @@ func GetAdmitidos(idPeriodo int64, nivel string, idProyecto int64, periodoValor 
 					datoIdentTercero["numero"] = datoIdentif[0]["Numero"]
 				} else {
 					var datoIdentif_2intento []map[string]interface{}
-					errDatoIdentif_2intento := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+fmt.Sprintf("tercero?query=Id:%v", inscrip["PersonaId"]), &datoIdentif_2intento)
+					errDatoIdentif_2intento := request.GetJson(beego.AppConfig.String("TercerosService")+fmt.Sprintf("tercero?query=Id:%v", inscrip["PersonaId"]), &datoIdentif_2intento)
 					if errDatoIdentif_2intento == nil && fmt.Sprintf("%v", datoIdentif_2intento) != "[map[]]" {
 						datoIdentTercero["PrimerNombre"] = datoIdentif[0]["TerceroId"].(map[string]interface{})["PrimerNombre"]
 						datoIdentTercero["SegundoNombre"] = datoIdentif[0]["TerceroId"].(map[string]interface{})["SegundoNombre"]
@@ -107,7 +107,7 @@ func GetAdmitidos(idPeriodo int64, nivel string, idProyecto int64, periodoValor 
 
 				//Definición enfasis
 				var enfasis map[string]interface{}
-				errEnfasis := request.GetJson("http://"+beego.AppConfig.String("ProyectoAcademicoService")+fmt.Sprintf("enfasis/%v", inscrip["EnfasisId"]), &enfasis)
+				errEnfasis := request.GetJson(beego.AppConfig.String("ProyectoAcademicoService")+fmt.Sprintf("enfasis/%v", inscrip["EnfasisId"]), &enfasis)
 				if errEnfasis != nil || enfasis["Status"] == "404" {
 					enfasis = map[string]interface{}{
 						"Nombre": "Por definir",
@@ -116,7 +116,7 @@ func GetAdmitidos(idPeriodo int64, nivel string, idProyecto int64, periodoValor 
 
 				//Definición código
 				var codigoIdentif []map[string]interface{}
-				errCodigoIdentif := request.GetJson("http://"+beego.AppConfig.String("TercerosService")+fmt.Sprintf("datos_identificacion?query=TerceroId__Id:%v,TipoDocumentoId__Id:14", inscrip["PersonaId"]), &codigoIdentif)
+				errCodigoIdentif := request.GetJson(beego.AppConfig.String("TercerosService")+fmt.Sprintf("datos_identificacion?query=TerceroId__Id:%v,TipoDocumentoId__Id:14", inscrip["PersonaId"]), &codigoIdentif)
 				if errCodigoIdentif == nil && fmt.Sprintf("%v", datoIdentif) != "[map[]]" {
 					for _, cod := range codigoIdentif {
 						codigo, ok := cod["Numero"].(string)
@@ -248,7 +248,7 @@ func GuardarCodificacion(data []byte) (APIResponseDTO requestresponse.APIRespons
 			}
 
 			var guardado map[string]interface{}
-			errGuardar := request.SendJson("http://"+beego.AppConfig.String("TercerosService")+"/datos_identificacion", "POST", &guardado, dataIdentifi)
+			errGuardar := request.SendJson(beego.AppConfig.String("TercerosService")+"/datos_identificacion", "POST", &guardado, dataIdentifi)
 			if errGuardar == nil {
 				codigoGuardado = append(codigoGuardado, guardado)
 			} else {
