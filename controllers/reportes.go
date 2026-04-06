@@ -18,6 +18,35 @@ func (c *ReportesController) URLMapping() {
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
+	c.Mapping("GetInscripcionEvaluacionReporte", c.GetInscripcionEvaluacionReporte)
+	c.Mapping("Get", c.ReporteCaracterizacion)
+}
+
+// GetInscripcionEvaluacionReporte ...
+// @Title GetInscripcionEvaluacionReporte
+// @Description get Reportes
+// @Param	id_periodo		query 	int	true		"Id del periodo"
+// @Param	id_proyedcto		query 	int	true		"Id del proyecto curricular"
+// @Success 200 {object} models.Reportes
+// @Failure 403
+// @router /inscripcion-evaluacion/id_periodo/id_proyecto [get]
+func (c *ReportesController) GetInscripcionEvaluacionReporte() {
+	defer errorhandler.HandlePanic(&c.Controller)
+	//Id del periodo
+	idPeriodo, errPeriodo := c.GetInt64("id_periodo")
+	id_proyedcto, errProyecto := c.GetInt64("id_proyedcto")
+
+	if errPeriodo == nil || errProyecto == nil {
+		respuesta := services.ListadoInscripcionEvaluacion(idPeriodo, id_proyedcto)
+
+		c.Ctx.Output.SetStatus(respuesta.Status)
+		c.Data["json"] = respuesta
+		c.ServeJSON()
+	} else {
+		c.Ctx.Output.SetStatus(400)
+		c.Data["json"] = "Invalid data"
+		c.ServeJSON()
+	}
 }
 
 // PostReportes ...
@@ -95,4 +124,43 @@ func (c *ReportesController) Put() {
 // @router /:id [delete]
 func (c *ReportesController) Delete() {
 
+}
+
+// ReporteCaracterizacion ...
+// @Title ReporteCaracterizacion
+// @Description Reportes de Caracterización
+// @Param	id_periodo		query 	int	true		"Id del periodo"
+// @Param	id_proyecto		query 	int	true		"Id del proyecto"
+// @Success 200 {}
+// @Failure 403
+// @router /reporte-caracterizacion [get]
+func (c *ReportesController) ReporteCaracterizacion() {
+	defer errorhandler.HandlePanic(&c.Controller)
+
+	// Id del periodo
+	idPeriodo, err := c.GetInt64("id_periodo")
+	if err != nil {
+		resultado := requestresponse.APIResponseDTO(false, 403, "Error obteniendo id_periodo")
+		c.Ctx.Output.SetStatus(resultado.Status)
+		c.Data["json"] = resultado
+		c.ServeJSON()
+		return
+	}
+
+	// Id del proyecto
+	idProyecto, err := c.GetInt64("id_proyecto")
+	if err != nil {
+		resultado := requestresponse.APIResponseDTO(false, 403, "Error obteniendo id_proyecto")
+		c.Ctx.Output.SetStatus(resultado.Status)
+		c.Data["json"] = resultado
+		c.ServeJSON()
+		return
+	}
+
+	// Llamada al servicio con los parámetros obtenidos
+	resultado := services.ReporteCaracterizacion(idPeriodo, idProyecto)
+	c.Ctx.Output.SetStatus(resultado.Status)
+	c.Data["json"] = resultado
+
+	c.ServeJSON()
 }
