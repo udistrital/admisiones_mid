@@ -2087,7 +2087,7 @@ func caso1Inscripcion2GetLista(id_periodo int64, id_proyecto int64, listado *[]m
 }
 
 func caso1Inscripcion3GetLista(id_periodo int64, id_proyecto int64, listado *[]map[string]interface{}) {
-	var inscripcion3 []map[string]interface{}
+	var inscripcion3 []map[string]interface{} //
 	errInscripcion3 := request.GetJson(beego.AppConfig.String("InscripcionService")+fmt.Sprintf("inscripcion?query=EstadoInscripcionId__Id:6,ProgramaAcademicoId:%v,PeriodoId:%v,TipoInscripcionId.CodigoAbreviacion:NUEPOS&sortby=Id&order=asc&limit=0", id_proyecto, id_periodo), &inscripcion3)
 	if errInscripcion3 == nil && fmt.Sprintf("%v", inscripcion3) != "[map[]]" {
 		for _, inscrip3 := range inscripcion3 {
