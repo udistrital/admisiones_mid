@@ -8,7 +8,7 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/httplib"
-	"github.com/udistrital/sga_admisiones_mid/helpers"
+	"github.com/udistrital/admisiones_mid/helpers"
 	"github.com/udistrital/utils_oas/request"
 	"github.com/udistrital/utils_oas/requestresponse"
 	"github.com/udistrital/utils_oas/time_bogota"

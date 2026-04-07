@@ -17,7 +17,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/phpdave11/gofpdf"
-	"github.com/udistrital/sga_admisiones_mid/models"
+	"github.com/udistrital/admisiones_mid/models"
 	"github.com/udistrital/utils_oas/request"
 	"github.com/udistrital/utils_oas/requestresponse"
 	"github.com/udistrital/utils_oas/xlsx2pdf"
