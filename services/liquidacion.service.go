@@ -8,7 +8,7 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/httplib"
-	"github.com/udistrital/sga_admisiones_mid/helpers"
+	"github.com/udistrital/admisiones_mid/helpers"
 	"github.com/udistrital/utils_oas/request"
 	"github.com/udistrital/utils_oas/requestresponse"
 	"github.com/udistrital/utils_oas/time_bogota"
@@ -22,13 +22,10 @@ func ListarLiquidacionEstudiantes(idPeriodo int64, idProyecto int64) (APIRespons
 
 	//Obtener Datos del periodo
 	var periodo map[string]interface{}
-	fmt.Println("http://" + beego.AppConfig.String("ParametrosService") + fmt.Sprintf("periodo/%v", idPeriodo))
 	errPeriodo := request.GetJson(beego.AppConfig.String("ParametrosService")+fmt.Sprintf("periodo/%v", idPeriodo), &periodo)
 	if errPeriodo != nil || fmt.Sprintf("%v", periodo) == "[map[]]" {
 		return helpers.ErrEmiter(errPeriodo, fmt.Sprintf("%v", periodo))
 	}
-
-	fmt.Println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 
 	//Obtener Datos del proyecto & facultad
 	var facultad map[string]interface{}
@@ -125,7 +122,6 @@ func ListarLiquidacionEstudiantes(idPeriodo int64, idProyecto int64) (APIRespons
 		}
 
 		// Obtener descuentos
-		fmt.Println("http://" + beego.AppConfig.String("DescuentosService") + fmt.Sprintf("solicitud_descuento?query=Activo:true,TerceroId:%v,PeriodoId:%v", inscripcion["PersonaId"], idPeriodo))
 		errDescuentos := request.GetJson(beego.AppConfig.String("DescuentosService")+fmt.Sprintf("solicitud_descuento?query=Activo:true,TerceroId:%v,PeriodoId:%v", inscripcion["PersonaId"], idPeriodo), &descuentos)
 		if errDescuentos != nil || fmt.Sprintf("%v", descuentos) == "[map[]]" {
 			return helpers.ErrEmiter(errDescuentos, fmt.Sprintf("%v", descuentos))
@@ -182,12 +178,8 @@ func CrearLiquidacion(data []byte) (APIResponseDTO requestresponse.APIResponse) 
 
 		errLiquidacion := request.SendJson(beego.AppConfig.String("liquidacionService")+"liquidacion/", "POST", &nuevaLiquidacion, dataLiquidacion)
 		if errLiquidacion == nil {
-			fmt.Println(dataLiquidacion)
 
 			liqId := nuevaLiquidacion["Data"].(map[string]interface{})["_id"].(string)
-			fmt.Println("---------------------------------")
-			fmt.Println(liqId)
-			fmt.Println("---------------------------------")
 			if err := json.Unmarshal(data, &nuevaLiquidacion); err == nil {
 				//fmt.Println(nuevaNoticia["Contenido"])
 
@@ -195,7 +187,6 @@ func CrearLiquidacion(data []byte) (APIResponseDTO requestresponse.APIResponse) 
 				if conceptoExist {
 
 					conceptos := concepto.([]interface{})
-					fmt.Println(conceptos)
 
 					for _, c := range conceptos {
 						contenidoMap := c.(map[string]interface{})
@@ -207,7 +198,6 @@ func CrearLiquidacion(data []byte) (APIResponseDTO requestresponse.APIResponse) 
 							"fecha_modificacion": date,
 							"liquidacion_id":     liqId,
 						}
-						fmt.Println(dataConcepto)
 
 						errConcepto := request.SendJson(beego.AppConfig.String("liquidacionService")+"liquidacion-detalle/", "POST", &nuevoConcepto, dataConcepto)
 						if errConcepto != nil {
@@ -237,7 +227,7 @@ func CrearLiquidacion(data []byte) (APIResponseDTO requestresponse.APIResponse) 
 
 							var NuevoRecibo map[string]interface{}
 
-							reciboSolicitud := httplib.Post("http://" + beego.AppConfig.String("GenerarReciboJbpmService") + "recibos_pago_proxy")
+							reciboSolicitud := httplib.Post(beego.AppConfig.String("GenerarReciboJbpmService") + "recibos_pago_proxy")
 							reciboSolicitud.Header("Accept", "application/json")
 							reciboSolicitud.Header("Content-Type", "application/json")
 							reciboSolicitud.JSONBody(objTransaccion)
@@ -290,7 +280,7 @@ func CrearLiquidacion(data []byte) (APIResponseDTO requestresponse.APIResponse) 
 }
 
 func GetAllLiquidaciones() (APIResponseDTO requestresponse.APIResponse) {
-	fmt.Println("GetAll")
+	// fmt.Println("GetAll")
 	var liquidacion interface{}
 	wge := new(errgroup.Group)
 	var mutex sync.Mutex // Mutex para proteger el acceso a resultados

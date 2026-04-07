@@ -114,7 +114,7 @@ func SugerenciaCorreosUD(idPeriodo int64, Opcion int64) requestresponse.APIRespo
 					if err == nil {
 						// checar si key principal existe
 						if _, ok := telefonos["principal"]; ok {
-							fmt.Println(telefonos, telefonos["principal"])
+							// fmt.Println(telefonos, telefonos["principal"])
 							numeroTelefonico = fmt.Sprintf("%.f", telefonos["principal"].(float64))
 						}
 					} else {
