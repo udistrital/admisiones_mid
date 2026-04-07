@@ -195,7 +195,7 @@ func ListarDataInscripcionEvaluacion(dataOrganizada []map[string]interface{}, re
 
 	// Codifica el contenido del buffer en Base64
 	base64Str := base64.StdEncoding.EncodeToString(buffer.Bytes())
-	fmt.Println(base64Str)
+	// fmt.Println(base64Str)
 
 	return map[string]interface{}{
 		"Excel": base64Str,
@@ -431,8 +431,6 @@ func ListadoAspirantesAdmitidos(id_Periodo string, id_Estado_Fomracion string, i
 										"Estado":      aspiranteMap["EstadoInscripcionId"].(map[string]interface{})["Nombre"],
 									}
 									personas = append(personas, persona)
-									fmt.Println("inscripcionesPregrado")
-									fmt.Println(inscripcionesPregradoMap)
 								}
 							}
 						}
@@ -592,8 +590,6 @@ func ListadoAspirantesOficializados(id_Periodo string, id_Nivel_Fomracion string
 			facultad := fmt.Sprintf("%v", proyecto.(map[string]interface{})["NombreFacultad"])
 			if proyectoAcademico, found := proyecto.(map[string]interface{})["ProyectoAcademico"].(map[string]interface{}); found {
 				if id, idFound := proyectoAcademico["Id"]; idFound {
-
-					fmt.Println("http://" + beego.AppConfig.String("InscripcionService") + "inscripcion?query=ProgramaAcademicoId:" + strconv.Itoa(int(id.(float64))) + ",PeriodoId:" + id_Periodo + ",EstadoInscripcionId.Id:" + id_Estado_Formacion)
 
 					errInscripcion := request.GetJson(beego.AppConfig.String("InscripcionService")+"inscripcion?query=ProgramaAcademicoId:"+strconv.Itoa(int(id.(float64)))+",PeriodoId:"+id_Periodo+",EstadoInscripcionId.Id:"+id_Estado_Formacion, &inscripciones)
 					if errInscripcion != nil {
@@ -875,8 +871,6 @@ func InformeLiquidacionPosgrado(data []byte) (APIResponseDTO requestresponse.API
 
 	for i, row := range admitidos {
 		//Esta data no es correspondiente aL INFORME DE POSGRADO, TOCA HACER CORRECION
-		fmt.Println("Row", row)
-		fmt.Println("Row", row["PrimerApellido"])
 		dataRow := i + 9
 		numeroRegistros := 1 + i
 		indx = dataRow
@@ -1022,8 +1016,6 @@ func InformeLiquidacionPregrado(data []byte) (APIResponseDTO requestresponse.API
 	}
 
 	for i, row := range admitidos {
-		fmt.Println("Row", row)
-		fmt.Println("Row", row["PrimerApellido"])
 		dataRow := i + 12
 		numeroRegistros := 1 + i
 		indx = dataRow
