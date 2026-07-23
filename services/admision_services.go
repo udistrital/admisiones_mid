@@ -933,6 +933,101 @@ func ConsultaSuite(dataProyectos []map[string]interface{}, tipoInscripcion []map
 	return dataSuite
 }
 
+func ObtenerSuite(periodoId, dependenciaId, tipoInscripcionId string) (APIResponseDTO requestresponse.APIResponse) {
+	var suite map[string]interface{}
+	err := request.GetJson(
+		beego.AppConfig.String("EvaluacionInscripcionService")+"tags_por_dependencia?query=Activo:true,PeriodoId:"+periodoId+",DependenciaId:"+dependenciaId+",TipoInscripcionId:"+tipoInscripcionId,
+		&suite,
+	)
+	if err != nil {
+		return requestresponse.APIResponseDTO(false, 500, nil, "Error al consultar suite: "+err.Error())
+	}
+
+	if data, ok := suite["Data"].([]interface{}); ok && len(data) > 0 {
+		return requestresponse.APIResponseDTO(true, 200, data)
+	}
+
+	return requestresponse.APIResponseDTO(false, 404, nil, "No se encontró suite para los parámetros dados")
+}
+
+func CrearSuite(data []byte) (APIResponseDTO requestresponse.APIResponse) {
+	var body map[string]interface{}
+	if err := json.Unmarshal(data, &body); err != nil {
+		return requestresponse.APIResponseDTO(false, 400, nil, "Error al decodificar body: "+err.Error())
+	}
+
+	periodoId := fmt.Sprintf("%v", body["PeriodoId"])
+	dependenciaId := fmt.Sprintf("%v", body["DependenciaId"])
+	tipoInscripcionId := fmt.Sprintf("%v", body["TipoInscripcionId"])
+
+	var existente map[string]interface{}
+	errExistente := request.GetJson(
+		beego.AppConfig.String("EvaluacionInscripcionService")+"tags_por_dependencia?query=Activo:true,PeriodoId:"+periodoId+",DependenciaId:"+dependenciaId+",TipoInscripcionId:"+tipoInscripcionId,
+		&existente,
+	)
+
+	if errExistente == nil {
+		if data, ok := existente["Data"].([]interface{}); ok && len(data) > 0 {
+			if registro, ok := data[0].(map[string]interface{}); ok && len(registro) > 0 {
+				return requestresponse.APIResponseDTO(false, 409, nil, "Ya existe una suite para este periodo, dependencia y tipo de inscripción")
+			}
+		}
+	}
+
+	var crudResponse map[string]interface{}
+	errPost := request.SendJson(
+		beego.AppConfig.String("EvaluacionInscripcionService")+"tags_por_dependencia",
+		"POST",
+		&crudResponse,
+		body,
+	)
+	if errPost != nil {
+		return requestresponse.APIResponseDTO(false, 500, nil, "Error al crear suite: "+errPost.Error())
+	}
+
+	if data, ok := crudResponse["Data"]; ok {
+		return requestresponse.APIResponseDTO(true, 201, data)
+	}
+	return requestresponse.APIResponseDTO(true, 201, crudResponse)
+}
+
+func ObtenerSuitePorId(id string) (APIResponseDTO requestresponse.APIResponse) {
+	var suite map[string]interface{}
+	err := request.GetJson(
+		beego.AppConfig.String("EvaluacionInscripcionService")+"tags_por_dependencia/"+id,
+		&suite,
+	)
+	if err != nil {
+		return requestresponse.APIResponseDTO(false, 500, nil, "Error al consultar suite por id: "+err.Error())
+	}
+
+	if data, ok := suite["Data"]; ok && data != nil {
+		return requestresponse.APIResponseDTO(true, 200, data)
+	}
+
+	return requestresponse.APIResponseDTO(false, 404, nil, "No se encontró suite con el id "+id)
+}
+
+func ActualizarSuitePorId(id string, data []byte) (APIResponseDTO requestresponse.APIResponse) {
+	var body map[string]interface{}
+	if err := json.Unmarshal(data, &body); err != nil {
+		return requestresponse.APIResponseDTO(false, 400, nil, "Error al decodificar body: "+err.Error())
+	}
+
+	var crudResponse map[string]interface{}
+	errPut := request.SendJson(
+		beego.AppConfig.String("EvaluacionInscripcionService")+"tags_por_dependencia/"+id, "PUT", &crudResponse, body,
+	)
+	if errPut != nil {
+		return requestresponse.APIResponseDTO(false, 500, nil, "Error al actualizar suite por id: "+errPut.Error())
+	}
+
+	if data, ok := crudResponse["Data"]; ok {
+		return requestresponse.APIResponseDTO(true, 200, data)
+	}
+	return requestresponse.APIResponseDTO(true, 200, crudResponse)
+}
+
 // Función principal
 func RelacionData(relacionCalendario map[string]interface{}, dataPeriodo map[string]interface{}, dataCalendario map[string]interface{}, errorGetAll bool) map[string]interface{} {
 	proyectosSolicitados := make(map[int]bool)
