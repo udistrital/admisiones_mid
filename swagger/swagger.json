@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "title": "beego Test API",
-        "description": "beego has a very cool tools to autogenerate documents for your API",
+        "description": "beego has a very cool tools to autogenerate documents for your API\n",
         "version": "1.0.0",
         "termsOfService": "http://beego.me/",
         "contact": {
@@ -20,7 +20,7 @@
                 "tags": [
                     "admision"
                 ],
-                "description": "Agregar CriterioIcfes",
+                "description": "Agregar CriterioIcfes\n\u003cbr\u003e",
                 "operationId": "AdmisionController.PostCriterioIcfes",
                 "parameters": [
                     {
@@ -48,7 +48,7 @@
                 "tags": [
                     "admision"
                 ],
-                "description": "get Lista estados aspirantes Evaluados  by id_periodo id_nivel id_proyecto and tipo_lista",
+                "description": "get Lista estados aspirantes Evaluados  by id_periodo id_nivel id_proyecto and tipo_lista\n\u003cbr\u003e",
                 "operationId": "AdmisionController.ListadoAdmitidos",
                 "parameters": [
                     {
@@ -91,7 +91,7 @@
                 "tags": [
                     "admision"
                 ],
-                "description": "get proyecto curriculares de facultad",
+                "description": "get proyecto curriculares de facultad\n\u003cbr\u003e",
                 "operationId": "AdmisionController.GetAcademicoAspirantesInscritos",
                 "responses": {
                     "200": {
@@ -108,7 +108,7 @@
                 "tags": [
                     "admision"
                 ],
-                "description": "get Aspirantes by id_periodo and id_proyecto",
+                "description": "get Aspirantes by id_periodo and id_proyecto\n\u003cbr\u003e",
                 "operationId": "AdmisionController.GetAspirantesByPeriodoByProyecto",
                 "parameters": [
                     {
@@ -136,7 +136,7 @@
                 "tags": [
                     "admision"
                 ],
-                "description": "get Lista estados aspirantes de proyectos activos",
+                "description": "get Lista estados aspirantes de proyectos activos\n\u003cbr\u003e",
                 "operationId": "AdmisionController.GetListaAspirantesPorProyectosActivos",
                 "parameters": [
                     {
@@ -173,7 +173,7 @@
                 "tags": [
                     "admision"
                 ],
-                "description": "get aspirantes con evaluacion por criterio general",
+                "description": "get aspirantes con evaluacion por criterio general\n\u003cbr\u003e",
                 "operationId": "AdmisionController.GetAspirantesConEvaluacion",
                 "parameters": [
                     {
@@ -215,7 +215,7 @@
                 "tags": [
                     "admision"
                 ],
-                "description": "get Lista estados aspirantes by id_periodo id_nivel id_proyecto and tipo_lista",
+                "description": "get Lista estados aspirantes by id_periodo id_nivel id_proyecto and tipo_lista\n\u003cbr\u003e",
                 "operationId": "AdmisionController.GetListaAspirantesPor",
                 "parameters": [
                     {
@@ -257,7 +257,7 @@
                 "tags": [
                     "admision"
                 ],
-                "description": "Se calcula la nota final de cada aspirante",
+                "description": "Se calcula la nota final de cada aspirante\n\u003cbr\u003e",
                 "operationId": "AdmisionController.PutNotaFinalAspirantes",
                 "parameters": [
                     {
@@ -285,7 +285,7 @@
                 "tags": [
                     "admision"
                 ],
-                "description": "Consultar los criterios y subcriterios",
+                "description": "Consultar los criterios y subcriterios\n\u003cbr\u003e",
                 "operationId": "AdmisionController.CriteriosSubcriterios",
                 "responses": {
                     "200": {
@@ -302,7 +302,7 @@
                 "tags": [
                     "admision"
                 ],
-                "description": "Agregar PostCuposAdmision",
+                "description": "Agregar PostCuposAdmision\n\u003cbr\u003e",
                 "operationId": "AdmisionController.PostCuposAdmision",
                 "parameters": [
                     {
@@ -330,7 +330,7 @@
                 "tags": [
                     "admision"
                 ],
-                "description": "get DependenciaId por Vinculacion de tercero, verificando cargo",
+                "description": "get DependenciaId por Vinculacion de tercero, verificando cargo\n\u003cbr\u003e",
                 "operationId": "AdmisionController.GetDependenciaPorVinculacionTercero",
                 "parameters": [
                     {
@@ -357,7 +357,7 @@
                 "tags": [
                     "admision"
                 ],
-                "description": "post cambioestadoaspirante by id_periodo and id_proyecto",
+                "description": "post cambioestadoaspirante by id_periodo and id_proyecto\n\u003cbr\u003e",
                 "operationId": "AdmisionController.CambioEstadoAspiranteByPeriodoByProyecto",
                 "parameters": [
                     {
@@ -385,7 +385,7 @@
                 "tags": [
                     "admision"
                 ],
-                "description": "Agregar la evaluacion de los aspirantes de acuerdo a los criterios",
+                "description": "Agregar la evaluacion de los aspirantes de acuerdo a los criterios\n\u003cbr\u003e",
                 "operationId": "AdmisionController.PostEvaluacionAspirantes",
                 "parameters": [
                     {
@@ -413,7 +413,7 @@
                 "tags": [
                     "admision"
                 ],
-                "description": "Consultar la evaluacion de los aspirantes de acuerdo a los criterios",
+                "description": "Consultar la evaluacion de los aspirantes de acuerdo a los criterios\n\u003cbr\u003e",
                 "operationId": "AdmisionController.GetEvaluacionAspirantes",
                 "parameters": [
                     {
@@ -456,7 +456,7 @@
                 "tags": [
                     "admision"
                 ],
-                "description": "get Lista estados aspirantes Evaluados  by id_periodo id_nivel id_proyecto and tipo_lista",
+                "description": "get Lista estados aspirantes Evaluados  by id_periodo id_nivel id_proyecto and tipo_lista\n\u003cbr\u003e",
                 "operationId": "AdmisionController.GetEvaluarAspirantesPregrado",
                 "parameters": [
                     {
@@ -491,7 +491,7 @@
                 "tags": [
                     "admision"
                 ],
-                "description": "get Lista de facultad inscritos",
+                "description": "get Lista de facultad inscritos\n\u003cbr\u003e",
                 "operationId": "AdmisionController.GetFacultadAspirantesInscritos",
                 "responses": {
                     "200": {
@@ -508,7 +508,7 @@
                 "tags": [
                     "admision"
                 ],
-                "description": "get aspirantes con evaluacion por criterio general",
+                "description": "get aspirantes con evaluacion por criterio general\n\u003cbr\u003e",
                 "operationId": "AdmisionController.GetlistadoGeneralPregrado",
                 "parameters": [
                     {
@@ -535,7 +535,7 @@
                 "tags": [
                     "admision"
                 ],
-                "description": "get Lista estados aspirantes Evaluados  by id_periodo id_nivel id_proyecto and tipo_lista",
+                "description": "get Lista estados aspirantes Evaluados  by id_periodo id_nivel id_proyecto and tipo_lista\n\u003cbr\u003e",
                 "operationId": "AdmisionController.ListadoOficializados",
                 "parameters": [
                     {
@@ -578,7 +578,7 @@
                 "tags": [
                     "admision"
                 ],
-                "description": "get PuntajeTotalCriteio by id_periodo and id_proyecto",
+                "description": "get PuntajeTotalCriteio by id_periodo and id_proyecto\n\u003cbr\u003e",
                 "operationId": "AdmisionController.GetPuntajeTotalByPeriodoByProyecto",
                 "parameters": [
                     {
@@ -606,7 +606,7 @@
                 "tags": [
                     "admision"
                 ],
-                "description": "Se actualiza el estado de inscripción de los aspirantes que no cumplan con el puntaje mínimo de un proyecto",
+                "description": "Se actualiza el estado de inscripción de los aspirantes que no cumplan con el puntaje mínimo de un proyecto\n\u003cbr\u003e",
                 "operationId": "AdmisionController.PutAspirantePuntajeMinimo",
                 "parameters": [
                     {
@@ -634,7 +634,7 @@
                 "tags": [
                     "admision"
                 ],
-                "description": "Generar PDF Soporte de configuracion",
+                "description": "Generar PDF Soporte de configuracion\n\u003cbr\u003e",
                 "operationId": "AdmisionController.SoporteConfiguracion",
                 "parameters": [
                     {
@@ -664,12 +664,142 @@
                 }
             }
         },
+        "/admision/suite": {
+            "get": {
+                "tags": [
+                    "admision"
+                ],
+                "description": "Obtiene la suite de inscripción de programa por periodo, dependencia y tipo de inscripción\n\u003cbr\u003e",
+                "operationId": "AdmisionController.GetSuite",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "periodo_id",
+                        "description": "Id del periodo",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "dependencia_id",
+                        "description": "Id de la dependencia (proyecto curricular)",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "tipo_inscripcion_id",
+                        "description": "Id del tipo de inscripción",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "admision"
+                ],
+                "description": "Crea una nueva suite de inscripción de programa\n\u003cbr\u003e",
+                "operationId": "AdmisionController.PostSuite",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Crear suite content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{}"
+                    },
+                    "409": {
+                        "description": "conflict"
+                    }
+                }
+            }
+        },
+        "/admision/suite/{id}": {
+            "get": {
+                "tags": [
+                    "admision"
+                ],
+                "description": "Obtiene una suite de inscripción por su ID\n\u003cbr\u003e",
+                "operationId": "AdmisionController.GetSuitePorId",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Id de la suite",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "404": {
+                        "description": "not found resource"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "admision"
+                ],
+                "description": "Actualiza una suite de inscripción por su ID\n\u003cbr\u003e",
+                "operationId": "AdmisionController.PutSuitePorId",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Id de la suite",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body Actualizar suite content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/{}"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
         "/codificacion/admitidos/": {
             "get": {
                 "tags": [
                     "codificacion"
                 ],
-                "description": "get admitidos por id de proyecto y periodo",
+                "description": "get admitidos por id de proyecto y periodo\n\u003cbr\u003e",
                 "operationId": "CodificacionController.GetAdmitidos",
                 "parameters": [
                     {
@@ -728,7 +858,7 @@
                 "tags": [
                     "codificacion"
                 ],
-                "description": "Guardar códigos",
+                "description": "Guardar códigos\n\u003cbr\u003e",
                 "operationId": "CodificacionController.PostGuardarCodigos",
                 "parameters": [
                     {
@@ -756,7 +886,7 @@
                 "tags": [
                     "codificacion"
                 ],
-                "description": "Generar códigos",
+                "description": "Generar códigos\n\u003cbr\u003e",
                 "operationId": "CodificacionController.PostGenerarCodigos",
                 "parameters": [
                     {
@@ -792,7 +922,7 @@
                 "tags": [
                     "gestion-correos"
                 ],
-                "description": "Endpoint para sugerencias de correos institucional sin homonimo",
+                "description": "Endpoint para sugerencias de correos institucional sin homonimo\n\u003cbr\u003e",
                 "operationId": "GestionCorreosController.SugerenciaCorreoInstitucional",
                 "parameters": [
                     {
@@ -830,7 +960,7 @@
                 "tags": [
                     "liquidacion"
                 ],
-                "description": "get Liquidacion by id",
+                "description": "get Liquidacion by id\n\u003cbr\u003e",
                 "operationId": "LiquidacionController.GetLiquidacion",
                 "parameters": [
                     {
@@ -857,7 +987,7 @@
                 "tags": [
                     "liquidacion"
                 ],
-                "description": "create Liquidacion",
+                "description": "create Liquidacion\n\u003cbr\u003e",
                 "operationId": "LiquidacionController.Create",
                 "parameters": [
                     {
@@ -888,7 +1018,7 @@
                 "tags": [
                     "liquidacion"
                 ],
-                "description": "create InformeLiquidacionPosgrado",
+                "description": "create InformeLiquidacionPosgrado\n\u003cbr\u003e",
                 "operationId": "LiquidacionController.Create",
                 "parameters": [
                     {
@@ -919,7 +1049,7 @@
                 "tags": [
                     "liquidacion"
                 ],
-                "description": "create InformeLiquidacionPregrado",
+                "description": "create InformeLiquidacionPregrado\n\u003cbr\u003e",
                 "operationId": "LiquidacionController.Create",
                 "parameters": [
                     {
@@ -950,7 +1080,7 @@
                 "tags": [
                     "liquidacion"
                 ],
-                "description": "get Liquidacion",
+                "description": "get Liquidacion\n\u003cbr\u003e",
                 "operationId": "LiquidacionController.GetAll",
                 "parameters": [
                     {
@@ -1008,7 +1138,7 @@
                 "tags": [
                     "liquidacion"
                 ],
-                "description": "update the Liquidacion",
+                "description": "update the Liquidacion\n\u003cbr\u003e",
                 "operationId": "LiquidacionController.Put",
                 "parameters": [
                     {
@@ -1044,7 +1174,7 @@
                 "tags": [
                     "liquidacion"
                 ],
-                "description": "delete the Liquidacion",
+                "description": "delete the Liquidacion\n\u003cbr\u003e",
                 "operationId": "LiquidacionController.Delete",
                 "parameters": [
                     {
@@ -1070,7 +1200,7 @@
                 "tags": [
                     "reporte"
                 ],
-                "description": "get Reportes",
+                "description": "get Reportes\n\u003cbr\u003e",
                 "operationId": "ReportesController.GetAll",
                 "parameters": [
                     {
@@ -1106,7 +1236,7 @@
                 "tags": [
                     "reporte"
                 ],
-                "description": "Crear reportes dinamicos",
+                "description": "Crear reportes dinamicos\n\u003cbr\u003e",
                 "operationId": "ReportesController.GenerarReportes",
                 "parameters": [
                     {
@@ -1137,7 +1267,7 @@
                 "tags": [
                     "reporte"
                 ],
-                "description": "get Reportes",
+                "description": "get Reportes\n\u003cbr\u003e",
                 "operationId": "ReportesController.GetInscripcionEvaluacionReporte",
                 "parameters": [
                     {
@@ -1170,12 +1300,47 @@
                 }
             }
         },
+        "/reporte/reporte-caracterizacion": {
+            "get": {
+                "tags": [
+                    "reporte"
+                ],
+                "description": "Reportes de Caracterización\n\u003cbr\u003e",
+                "operationId": "ReportesController.ReporteCaracterizacion",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id_periodo",
+                        "description": "Id del periodo",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "id_proyecto",
+                        "description": "Id del proyecto",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}"
+                    },
+                    "403": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/reporte/{id}": {
             "put": {
                 "tags": [
                     "reporte"
                 ],
-                "description": "update the Reportes",
+                "description": "update the Reportes\n\u003cbr\u003e",
                 "operationId": "ReportesController.Put",
                 "parameters": [
                     {
@@ -1211,7 +1376,7 @@
                 "tags": [
                     "reporte"
                 ],
-                "description": "delete the Reportes",
+                "description": "delete the Reportes\n\u003cbr\u003e",
                 "operationId": "ReportesController.Delete",
                 "parameters": [
                     {
