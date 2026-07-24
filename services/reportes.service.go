@@ -1356,11 +1356,6 @@ func obtenerInfoPeriodo(idPeriodo string) (map[string]interface{}, error) {
 	//Obtener Datos del periodo
 	var periodo map[string]interface{}
 	errPeriodo := request.GetJson(beego.AppConfig.String("ParametrosService")+fmt.Sprintf("periodo/%v", idPeriodo), &periodo)
-	logs.Info("Query a parametros")
-	fmt.Println(beego.AppConfig.String("ParametrosService") + fmt.Sprintf("periodo/%v", idPeriodo))
-	logs.Info("Periodo desde parametros")
-	fmt.Println(periodo)
-	fmt.Println("")
 	if errPeriodo != nil || fmt.Sprintf("%v", periodo) == "map[]" {
 		return periodo, errPeriodo
 	}
@@ -1611,18 +1606,6 @@ func reporteInscritosPorPrograma(infoReporte models.ReporteEstructura) requestre
 			terceroTelefono := fmt.Sprintf("%v", personaData["Telefono"])
 			terceroCorreo := fmt.Sprintf("%v", personaData["UsuarioWSO2"])
 
-			enfasis := obtenerEnfasis(fmt.Sprintf("%v", inscripcion["EnfasisId"]))
-
-			var nombreDescuento string
-			var descuento []map[string]interface{}
-			errDescuento := request.GetJson(beego.AppConfig.String("DescuentosService")+fmt.Sprintf("solicitud_descuento?query=TerceroId:%v,PeriodoId:%v,DescuentosDependenciaId__DependenciaId:%v", inscripcion["PersonaId"], infoReporte.Periodo, infoReporte.Proyecto), &descuento)
-			if errDescuento != nil || fmt.Sprintf("%v", descuento) == "[map[]]" {
-				nombreDescuento = "NA"
-			} else {
-				nombreDescuento = fmt.Sprintf("%v",
-					descuento[0]["DescuentosDependenciaId"].(map[string]interface{})["TipoDescuentoId"].(map[string]interface{})["Nombre"])
-			}
-
 			inscrito := []interface{}{
 				terceroDocumento,
 				terceroNombre,
@@ -1631,8 +1614,19 @@ func reporteInscritosPorPrograma(infoReporte models.ReporteEstructura) requestre
 			}
 
 			if infoReporte.TipoReporte == 1 {
+				enfasis := obtenerEnfasis(fmt.Sprintf("%v", inscripcion["EnfasisId"]))
+				var nombreDescuento string
+				var descuento []map[string]interface{}
+				errDescuento := request.GetJson(beego.AppConfig.String("DescuentosService")+fmt.Sprintf("solicitud_descuento?query=TerceroId:%v,PeriodoId:%v,DescuentosDependenciaId__DependenciaId:%v", inscripcion["PersonaId"], infoReporte.Periodo, infoReporte.Proyecto), &descuento)
+				if errDescuento != nil || fmt.Sprintf("%v", descuento) == "[map[]]" {
+					nombreDescuento = "NA"
+				} else {
+					nombreDescuento = fmt.Sprintf("%v",
+						descuento[0]["DescuentosDependenciaId"].(map[string]interface{})["TipoDescuentoId"].(map[string]interface{})["Nombre"])
+				}
 				inscrito = append(inscrito, inscripcion["Id"], enfasis, nombreDescuento, inscripcion["EstadoInscripcionId"].(map[string]interface{})["Nombre"])
 			} else if infoReporte.TipoReporte == 2 {
+				enfasis := obtenerEnfasis(fmt.Sprintf("%v", inscripcion["EnfasisId"]))
 				inscrito = append(inscrito, inscripcion["Id"], enfasis, inscripcion["EstadoInscripcionId"].(map[string]interface{})["Nombre"], inscripcion["NotaFinal"])
 			} else {
 				inscrito = append(inscrito, inscripcion["TipoInscripcionId"].(map[string]interface{})["Nombre"], inscripcion["EstadoInscripcionId"].(map[string]interface{})["Nombre"])
