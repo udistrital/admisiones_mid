@@ -1604,6 +1604,9 @@ func reporteInscritosPorPrograma(infoReporte models.ReporteEstructura) requestre
 			terceroDocumento := fmt.Sprintf("%v", personaData["NumeroIdentificacion"])
 			terceroNombre := fmt.Sprintf("%v", personaData["NombreCompleto"])
 			terceroTelefono := fmt.Sprintf("%v", personaData["Telefono"])
+			if f, ok := personaData["Telefono"].(float64); ok {
+				terceroTelefono = strconv.FormatInt(int64(f), 10)
+			}
 			terceroCorreo := fmt.Sprintf("%v", personaData["UsuarioWSO2"])
 
 			inscrito := []interface{}{
