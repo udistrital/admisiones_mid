@@ -1637,7 +1637,6 @@ func reporteInscritosPorPrograma(infoReporte models.ReporteEstructura) requestre
 				// tipo de reporte 0 -> TODOS LOS ASPIRANTES SIN IMPORTAR ESTADO
 				var ReciboResp models.ReciboResponse
 				errRecibo := request.GetJsonWSO2(beego.AppConfig.String("ConsultarReciboJbpmService")+"consulta_recibo/"+fmt.Sprintf("%v", inscripcion["ReciboInscripcion"]), &ReciboResp)
-				logs.Info("ReciboResp para inscripcion %v: errRecibo=%v, ReciboResp=%v", inscripcion["Id"], errRecibo, ReciboResp)
 				reciboEstado := "NA"
 				reciboPago := "NA"
 				if errRecibo == nil && len(ReciboResp.ReciboCollection.Recibo) > 0 {
@@ -1645,7 +1644,6 @@ func reporteInscritosPorPrograma(infoReporte models.ReporteEstructura) requestre
 					reciboEstado = fmt.Sprintf("%v/%v", recibo.Secuencia, recibo.Ano)
 					reciboPago = fmt.Sprintf("%v", recibo.FechaPagado)
 				}
-				logs.Info("ReciboResp resultado para inscripcion %v: estado=%v, pago=%v", inscripcion["Id"], reciboEstado, reciboPago)
 				inscrito = append(inscrito, inscripcion["TipoInscripcionId"].(map[string]interface{})["Nombre"], inscripcion["EstadoInscripcionId"].(map[string]interface{})["Nombre"], reciboEstado, reciboPago)
 			}
 			inscritos = append(inscritos, inscrito)
