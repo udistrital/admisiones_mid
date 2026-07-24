@@ -1467,14 +1467,12 @@ func ReporteDinamico(data []byte) requestresponse.APIResponse {
 	var reporte models.ReporteEstructura
 	var respuesta requestresponse.APIResponse
 	if err := json.Unmarshal(data, &reporte); err == nil {
-		if reporte.TipoReporte != 0 {
-			if reporte.TipoReporte < 4 {
-				respuesta = reporteInscritosPorPrograma(reporte)
-			} else if reporte.TipoReporte == 4 {
-				respuesta = reporteAspirantesPeriodoYnivel(reporte)
-			} else {
-				respuesta = reporteTransferenciasReintegros(reporte)
-			}
+		if reporte.TipoReporte < 4 {
+			respuesta = reporteInscritosPorPrograma(reporte)
+		} else if reporte.TipoReporte == 4 {
+			respuesta = reporteAspirantesPeriodoYnivel(reporte)
+		} else {
+			respuesta = reporteTransferenciasReintegros(reporte)
 		}
 
 	} else {
@@ -1572,7 +1570,7 @@ func reporteInscritosPorPrograma(infoReporte models.ReporteEstructura) requestre
 
 		//Hacer consulta especifica para estado ADMITIDO U OPCIONADO
 		errInscripciones = request.GetJson(beego.AppConfig.String("InscripcionService")+fmt.Sprintf("inscripcion?query=EstadoInscripcionId__Nombre__in:ADMITIDO|OPCIONADO,Activo:true,ProgramaAcademicoId:%v,PeriodoId:%v,TipoInscripcionId__Id:%v&limit=0", infoReporte.Proyecto, infoReporte.Periodo, infoReporte.TipoInscripcion), &inscripciones)
-	} else {
+	} else if infoReporte.TipoReporte == 3 {
 		//Añadir headers no compartidos
 		dataHeader["Indices"] = append(dataHeader["Indices"].([]interface{}),
 			"Tipo inscripción",
@@ -1580,6 +1578,14 @@ func reporteInscritosPorPrograma(infoReporte models.ReporteEstructura) requestre
 
 		//Hacer consulta especifica para aspirantes
 		errInscripciones = request.GetJson(beego.AppConfig.String("InscripcionService")+fmt.Sprintf("inscripcion?query=Activo:true,ProgramaAcademicoId:%v,PeriodoId:%v,TipoInscripcionId__Id:%v&limit=0", infoReporte.Proyecto, infoReporte.Periodo, infoReporte.TipoInscripcion), &inscripciones)
+	} else {
+		//Añadir headers no compartidos
+		dataHeader["Indices"] = append(dataHeader["Indices"].([]interface{}),
+			"Tipo inscripción", "Estado inscripción", "Secuencia", "Fecha de pago",
+		)
+
+		//Hacer consulta sin filtrar por tipo de inscripción (TipoReporte 0)
+		errInscripciones = request.GetJson(beego.AppConfig.String("InscripcionService")+fmt.Sprintf("inscripcion?query=Activo:true,ProgramaAcademicoId:%v,PeriodoId:%v&limit=0", infoReporte.Proyecto, infoReporte.Periodo), &inscripciones)
 	}
 
 	//Si existen inscripciones entonces
@@ -1588,51 +1594,59 @@ func reporteInscritosPorPrograma(infoReporte models.ReporteEstructura) requestre
 	} else {
 
 		for _, inscripcion := range inscripciones {
-			//Datos basicos tercero
-			tercero, err := obtenerInfoTercero(fmt.Sprintf("%v", inscripcion["PersonaId"]))
-			if err != nil || fmt.Sprintf("%v", tercero) == "[map[]]" {
-				return errEmiter(err)
+			var personaResponse map[string]interface{}
+			errPersona := request.GetJson(beego.AppConfig.String("TerceroMid")+fmt.Sprintf("personas/%v", inscripcion["PersonaId"]), &personaResponse)
+			if errPersona != nil || personaResponse["Data"] == nil {
+				continue
 			}
+			personaData := personaResponse["Data"].(map[string]interface{})
 
-			//Obtener Documento Tercero
-			terceroDocumento, err := obtenerDocumentoTercero(fmt.Sprintf("%v", inscripcion["PersonaId"]))
-			if err != nil || fmt.Sprintf("%v", terceroDocumento) == "[map[]]" {
-				return errEmiter(err)
+			terceroDocumento := fmt.Sprintf("%v", personaData["NumeroIdentificacion"])
+			terceroNombre := fmt.Sprintf("%v", personaData["NombreCompleto"])
+			terceroTelefono := fmt.Sprintf("%v", personaData["Telefono"])
+			if f, ok := personaData["Telefono"].(float64); ok {
+				terceroTelefono = strconv.FormatInt(int64(f), 10)
 			}
-			//Obtener Telefono Tercero
-
-			terceroTelefono := obtenerTelefonoTercero(fmt.Sprintf("%v", inscripcion["PersonaId"]))
-
-			//Obtener Correo Tercero
-			terceroCorreo := obtenerCorreoTercero(fmt.Sprintf("%v", inscripcion["PersonaId"]))
-
-			//Obtener enfasis
-			enfasis := obtenerEnfasis(fmt.Sprintf("%v", inscripcion["EnfasisId"]))
-
-			//Obtener descuentos solicitados
-			var nombreDescuento string
-			var descuento []map[string]interface{}
-			errDescuento := request.GetJson(beego.AppConfig.String("DescuentosService")+fmt.Sprintf("solicitud_descuento?query=TerceroId:%v,PeriodoId:%v,DescuentosDependenciaId__DependenciaId:%v", inscripcion["PersonaId"], infoReporte.Periodo, infoReporte.Proyecto), &descuento)
-			if errDescuento != nil || fmt.Sprintf("%v", descuento) == "[map[]]" {
-				nombreDescuento = "NA"
-			} else {
-				nombreDescuento = fmt.Sprintf("%v",
-					descuento[0]["DescuentosDependenciaId"].(map[string]interface{})["TipoDescuentoId"].(map[string]interface{})["Nombre"])
-			}
+			terceroCorreo := fmt.Sprintf("%v", personaData["UsuarioWSO2"])
 
 			inscrito := []interface{}{
-				terceroDocumento[0]["Numero"],
-				tercero[0]["NombreCompleto"],
+				terceroDocumento,
+				terceroNombre,
 				terceroTelefono,
 				terceroCorreo,
 			}
 
 			if infoReporte.TipoReporte == 1 {
+				enfasis := obtenerEnfasis(fmt.Sprintf("%v", inscripcion["EnfasisId"]))
+				var nombreDescuento string
+				var descuento []map[string]interface{}
+				errDescuento := request.GetJson(beego.AppConfig.String("DescuentosService")+fmt.Sprintf("solicitud_descuento?query=TerceroId:%v,PeriodoId:%v,DescuentosDependenciaId__DependenciaId:%v", inscripcion["PersonaId"], infoReporte.Periodo, infoReporte.Proyecto), &descuento)
+				if errDescuento != nil || fmt.Sprintf("%v", descuento) == "[map[]]" {
+					nombreDescuento = "NA"
+				} else {
+					nombreDescuento = fmt.Sprintf("%v",
+						descuento[0]["DescuentosDependenciaId"].(map[string]interface{})["TipoDescuentoId"].(map[string]interface{})["Nombre"])
+				}
 				inscrito = append(inscrito, inscripcion["Id"], enfasis, nombreDescuento, inscripcion["EstadoInscripcionId"].(map[string]interface{})["Nombre"])
 			} else if infoReporte.TipoReporte == 2 {
+				enfasis := obtenerEnfasis(fmt.Sprintf("%v", inscripcion["EnfasisId"]))
 				inscrito = append(inscrito, inscripcion["Id"], enfasis, inscripcion["EstadoInscripcionId"].(map[string]interface{})["Nombre"], inscripcion["NotaFinal"])
-			} else {
+			} else if infoReporte.TipoReporte == 3 {
 				inscrito = append(inscrito, inscripcion["TipoInscripcionId"].(map[string]interface{})["Nombre"], inscripcion["EstadoInscripcionId"].(map[string]interface{})["Nombre"])
+			} else {
+				// tipo de reporte 0 -> TODOS LOS ASPIRANTES SIN IMPORTAR ESTADO
+				var ReciboResp models.ReciboResponse
+				errRecibo := request.GetJsonWSO2(beego.AppConfig.String("ConsultarReciboJbpmService")+"consulta_recibo/"+fmt.Sprintf("%v", inscripcion["ReciboInscripcion"]), &ReciboResp)
+				logs.Info("ReciboResp para inscripcion %v: errRecibo=%v, ReciboResp=%v", inscripcion["Id"], errRecibo, ReciboResp)
+				reciboEstado := "NA"
+				reciboPago := "NA"
+				if errRecibo == nil && len(ReciboResp.ReciboCollection.Recibo) > 0 {
+					recibo := ReciboResp.ReciboCollection.Recibo[0]
+					reciboEstado = fmt.Sprintf("%v/%v", recibo.Secuencia, recibo.Ano)
+					reciboPago = fmt.Sprintf("%v", recibo.FechaPagado)
+				}
+				logs.Info("ReciboResp resultado para inscripcion %v: estado=%v, pago=%v", inscripcion["Id"], reciboEstado, reciboPago)
+				inscrito = append(inscrito, inscripcion["TipoInscripcionId"].(map[string]interface{})["Nombre"], inscripcion["EstadoInscripcionId"].(map[string]interface{})["Nombre"], reciboEstado, reciboPago)
 			}
 			inscritos = append(inscritos, inscrito)
 
