@@ -4,6 +4,6 @@ WORKDIR /
 
 COPY main main
 COPY conf/app.conf conf/app.conf
-COPY static/images/ static/images/ 
+COPY static/ static/
 
 ENTRYPOINT ["/main"]
