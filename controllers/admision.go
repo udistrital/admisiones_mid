@@ -37,6 +37,10 @@ func (c *AdmisionController) URLMapping() {
 	c.Mapping("ListadoAdmitidos", c.ListadoAdmitidos)
 	c.Mapping("GetAspirantesConEvaluacion", c.GetAspirantesConEvaluacion)
 	c.Mapping("GetlistadoGeneralPregrado", c.GetlistadoGeneralPregrado)
+	c.Mapping("GetSuite", c.GetSuite)
+	c.Mapping("PostSuite", c.PostSuite)
+	c.Mapping("GetSuitePorId", c.GetSuitePorId)
+	c.Mapping("PutSuitePorId", c.PutSuitePorId)
 }
 
 // PutNotaFinalAspirantes ...
@@ -514,5 +518,103 @@ func (c *AdmisionController) GetlistadoGeneralPregrado() {
 		c.Ctx.Output.SetStatus(respuesta.Status)
 		c.Data["json"] = respuesta
 	}
+	c.ServeJSON()
+}
+
+// GetSuite ...
+// @Title GetSuite
+// @Description Obtiene la suite de inscripción de programa por periodo, dependencia y tipo de inscripción
+// @Param	periodo_id			query	int	true	"Id del periodo"
+// @Param	dependencia_id		query	int	true	"Id de la dependencia (proyecto curricular)"
+// @Param	tipo_inscripcion_id	query	int	true	"Id del tipo de inscripción"
+// @Success 200 {}
+// @Failure 404 not found resource
+// @router /suite [get]
+func (c *AdmisionController) GetSuite() {
+	defer errorhandler.HandlePanic(&c.Controller)
+
+	periodoId := c.GetString("periodo_id")
+	dependenciaId := c.GetString("dependencia_id")
+	tipoInscripcionId := c.GetString("tipo_inscripcion_id")
+
+	if periodoId == "" || dependenciaId == "" || tipoInscripcionId == "" {
+		c.Ctx.Output.SetStatus(400)
+		c.Data["json"] = requestresponse.APIResponseDTO(false, 400, nil, "Faltan parámetros: periodo_id, dependencia_id, tipo_inscripcion_id")
+		c.ServeJSON()
+		return
+	}
+
+	respuesta := services.ObtenerSuite(periodoId, dependenciaId, tipoInscripcionId)
+	c.Ctx.Output.SetStatus(respuesta.Status)
+	c.Data["json"] = respuesta
+	c.ServeJSON()
+}
+
+// PostSuite ...
+// @Title PostSuite
+// @Description Crea una nueva suite de inscripción de programa
+// @Param	body	body	{}	true	"body Crear suite content"
+// @Success 201 {}
+// @Failure 409 conflict
+// @router /suite [post]
+func (c *AdmisionController) PostSuite() {
+	defer errorhandler.HandlePanic(&c.Controller)
+
+	data := c.Ctx.Input.RequestBody
+
+	respuesta := services.CrearSuite(data)
+	c.Ctx.Output.SetStatus(respuesta.Status)
+	c.Data["json"] = respuesta
+	c.ServeJSON()
+}
+
+// GetSuitePorId ...
+// @Title GetSuitePorId
+// @Description Obtiene una suite de inscripción por su ID
+// @Param	id	path	int	true	"Id de la suite"
+// @Success 200 {}
+// @Failure 404 not found resource
+// @router /suite/:id [get]
+func (c *AdmisionController) GetSuitePorId() {
+	defer errorhandler.HandlePanic(&c.Controller)
+
+	id := c.Ctx.Input.Param(":id")
+	if id == "" {
+		c.Ctx.Output.SetStatus(400)
+		c.Data["json"] = requestresponse.APIResponseDTO(false, 400, nil, "Id es requerido")
+		c.ServeJSON()
+		return
+	}
+
+	respuesta := services.ObtenerSuitePorId(id)
+	c.Ctx.Output.SetStatus(respuesta.Status)
+	c.Data["json"] = respuesta
+	c.ServeJSON()
+}
+
+// PutSuitePorId ...
+// @Title PutSuitePorId
+// @Description Actualiza una suite de inscripción por su ID
+// @Param	id		path	int	true	"Id de la suite"
+// @Param	body	body	{}	true	"body Actualizar suite content"
+// @Success 200 {}
+// @Failure 403 body is empty
+// @router /suite/:id [put]
+func (c *AdmisionController) PutSuitePorId() {
+	defer errorhandler.HandlePanic(&c.Controller)
+
+	id := c.Ctx.Input.Param(":id")
+	if id == "" {
+		c.Ctx.Output.SetStatus(400)
+		c.Data["json"] = requestresponse.APIResponseDTO(false, 400, nil, "Id es requerido")
+		c.ServeJSON()
+		return
+	}
+
+	data := c.Ctx.Input.RequestBody
+
+	respuesta := services.ActualizarSuitePorId(id, data)
+	c.Ctx.Output.SetStatus(respuesta.Status)
+	c.Data["json"] = respuesta
 	c.ServeJSON()
 }

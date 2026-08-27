@@ -196,6 +196,42 @@ func init() {
 			Filters:          nil,
 			Params:           nil})
 
+	beego.GlobalControllerRouter["github.com/udistrital/admisiones_mid/controllers:AdmisionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/admisiones_mid/controllers:AdmisionController"],
+		beego.ControllerComments{
+			Method:           "GetSuite",
+			Router:           "/suite",
+			AllowHTTPMethods: []string{"get"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil})
+
+	beego.GlobalControllerRouter["github.com/udistrital/admisiones_mid/controllers:AdmisionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/admisiones_mid/controllers:AdmisionController"],
+		beego.ControllerComments{
+			Method:           "PostSuite",
+			Router:           "/suite",
+			AllowHTTPMethods: []string{"post"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil})
+
+	beego.GlobalControllerRouter["github.com/udistrital/admisiones_mid/controllers:AdmisionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/admisiones_mid/controllers:AdmisionController"],
+		beego.ControllerComments{
+			Method:           "GetSuitePorId",
+			Router:           "/suite/:id",
+			AllowHTTPMethods: []string{"get"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil})
+
+	beego.GlobalControllerRouter["github.com/udistrital/admisiones_mid/controllers:AdmisionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/admisiones_mid/controllers:AdmisionController"],
+		beego.ControllerComments{
+			Method:           "PutSuitePorId",
+			Router:           "/suite/:id",
+			AllowHTTPMethods: []string{"put"},
+			MethodParams:     param.Make(),
+			Filters:          nil,
+			Params:           nil})
+
 	beego.GlobalControllerRouter["github.com/udistrital/admisiones_mid/controllers:CodificacionController"] = append(beego.GlobalControllerRouter["github.com/udistrital/admisiones_mid/controllers:CodificacionController"],
 		beego.ControllerComments{
 			Method:           "GetAdmitidos",
