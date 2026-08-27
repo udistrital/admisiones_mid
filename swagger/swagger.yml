@@ -1,7 +1,8 @@
 swagger: "2.0"
 info:
   title: beego Test API
-  description: beego has a very cool tools to autogenerate documents for your API
+  description: |
+    beego has a very cool tools to autogenerate documents for your API
   version: 1.0.0
   termsOfService: http://beego.me/
   contact:
@@ -15,7 +16,9 @@ paths:
     post:
       tags:
       - admision
-      description: Agregar CriterioIcfes
+      description: |-
+        Agregar CriterioIcfes
+        <br>
       operationId: AdmisionController.PostCriterioIcfes
       parameters:
       - in: body
@@ -33,7 +36,9 @@ paths:
     get:
       tags:
       - admision
-      description: get Lista estados aspirantes Evaluados  by id_periodo id_nivel id_proyecto and tipo_lista
+      description: |-
+        get Lista estados aspirantes Evaluados  by id_periodo id_nivel id_proyecto and tipo_lista
+        <br>
       operationId: AdmisionController.ListadoAdmitidos
       parameters:
       - in: query
@@ -63,7 +68,9 @@ paths:
     get:
       tags:
       - admision
-      description: get proyecto curriculares de facultad
+      description: |-
+        get proyecto curriculares de facultad
+        <br>
       operationId: AdmisionController.GetAcademicoAspirantesInscritos
       responses:
         "200":
@@ -74,7 +81,9 @@ paths:
     post:
       tags:
       - admision
-      description: get Aspirantes by id_periodo and id_proyecto
+      description: |-
+        get Aspirantes by id_periodo and id_proyecto
+        <br>
       operationId: AdmisionController.GetAspirantesByPeriodoByProyecto
       parameters:
       - in: body
@@ -92,7 +101,9 @@ paths:
     get:
       tags:
       - admision
-      description: get Lista estados aspirantes de proyectos activos
+      description: |-
+        get Lista estados aspirantes de proyectos activos
+        <br>
       operationId: AdmisionController.GetListaAspirantesPorProyectosActivos
       parameters:
       - in: query
@@ -116,7 +127,9 @@ paths:
     get:
       tags:
       - admision
-      description: get aspirantes con evaluacion por criterio general
+      description: |-
+        get aspirantes con evaluacion por criterio general
+        <br>
       operationId: AdmisionController.GetAspirantesConEvaluacion
       parameters:
       - in: query
@@ -145,7 +158,9 @@ paths:
     get:
       tags:
       - admision
-      description: get Lista estados aspirantes by id_periodo id_nivel id_proyecto and tipo_lista
+      description: |-
+        get Lista estados aspirantes by id_periodo id_nivel id_proyecto and tipo_lista
+        <br>
       operationId: AdmisionController.GetListaAspirantesPor
       parameters:
       - in: query
@@ -174,7 +189,9 @@ paths:
     put:
       tags:
       - admision
-      description: Se calcula la nota final de cada aspirante
+      description: |-
+        Se calcula la nota final de cada aspirante
+        <br>
       operationId: AdmisionController.PutNotaFinalAspirantes
       parameters:
       - in: body
@@ -192,7 +209,9 @@ paths:
     get:
       tags:
       - admision
-      description: Consultar los criterios y subcriterios
+      description: |-
+        Consultar los criterios y subcriterios
+        <br>
       operationId: AdmisionController.CriteriosSubcriterios
       responses:
         "200":
@@ -203,7 +222,9 @@ paths:
     post:
       tags:
       - admision
-      description: Agregar PostCuposAdmision
+      description: |-
+        Agregar PostCuposAdmision
+        <br>
       operationId: AdmisionController.PostCuposAdmision
       parameters:
       - in: body
@@ -221,7 +242,9 @@ paths:
     get:
       tags:
       - admision
-      description: get DependenciaId por Vinculacion de tercero, verificando cargo
+      description: |-
+        get DependenciaId por Vinculacion de tercero, verificando cargo
+        <br>
       operationId: AdmisionController.GetDependenciaPorVinculacionTercero
       parameters:
       - in: path
@@ -239,7 +262,9 @@ paths:
     post:
       tags:
       - admision
-      description: post cambioestadoaspirante by id_periodo and id_proyecto
+      description: |-
+        post cambioestadoaspirante by id_periodo and id_proyecto
+        <br>
       operationId: AdmisionController.CambioEstadoAspiranteByPeriodoByProyecto
       parameters:
       - in: body
@@ -257,7 +282,9 @@ paths:
     post:
       tags:
       - admision
-      description: Agregar la evaluacion de los aspirantes de acuerdo a los criterios
+      description: |-
+        Agregar la evaluacion de los aspirantes de acuerdo a los criterios
+        <br>
       operationId: AdmisionController.PostEvaluacionAspirantes
       parameters:
       - in: body
@@ -275,7 +302,9 @@ paths:
     get:
       tags:
       - admision
-      description: Consultar la evaluacion de los aspirantes de acuerdo a los criterios
+      description: |-
+        Consultar la evaluacion de los aspirantes de acuerdo a los criterios
+        <br>
       operationId: AdmisionController.GetEvaluacionAspirantes
       parameters:
       - in: path
@@ -305,7 +334,9 @@ paths:
     get:
       tags:
       - admision
-      description: get Lista estados aspirantes Evaluados  by id_periodo id_nivel id_proyecto and tipo_lista
+      description: |-
+        get Lista estados aspirantes Evaluados  by id_periodo id_nivel id_proyecto and tipo_lista
+        <br>
       operationId: AdmisionController.GetEvaluarAspirantesPregrado
       parameters:
       - in: query
@@ -329,7 +360,9 @@ paths:
     get:
       tags:
       - admision
-      description: get Lista de facultad inscritos
+      description: |-
+        get Lista de facultad inscritos
+        <br>
       operationId: AdmisionController.GetFacultadAspirantesInscritos
       responses:
         "200":
@@ -340,7 +373,9 @@ paths:
     get:
       tags:
       - admision
-      description: get aspirantes con evaluacion por criterio general
+      description: |-
+        get aspirantes con evaluacion por criterio general
+        <br>
       operationId: AdmisionController.GetlistadoGeneralPregrado
       parameters:
       - in: query
@@ -358,7 +393,9 @@ paths:
     get:
       tags:
       - admision
-      description: get Lista estados aspirantes Evaluados  by id_periodo id_nivel id_proyecto and tipo_lista
+      description: |-
+        get Lista estados aspirantes Evaluados  by id_periodo id_nivel id_proyecto and tipo_lista
+        <br>
       operationId: AdmisionController.ListadoOficializados
       parameters:
       - in: query
@@ -388,7 +425,9 @@ paths:
     post:
       tags:
       - admision
-      description: get PuntajeTotalCriteio by id_periodo and id_proyecto
+      description: |-
+        get PuntajeTotalCriteio by id_periodo and id_proyecto
+        <br>
       operationId: AdmisionController.GetPuntajeTotalByPeriodoByProyecto
       parameters:
       - in: body
@@ -406,7 +445,9 @@ paths:
     put:
       tags:
       - admision
-      description: Se actualiza el estado de inscripción de los aspirantes que no cumplan con el puntaje mínimo de un proyecto
+      description: |-
+        Se actualiza el estado de inscripción de los aspirantes que no cumplan con el puntaje mínimo de un proyecto
+        <br>
       operationId: AdmisionController.PutAspirantePuntajeMinimo
       parameters:
       - in: body
@@ -424,7 +465,9 @@ paths:
     get:
       tags:
       - admision
-      description: Generar PDF Soporte de configuracion
+      description: |-
+        Generar PDF Soporte de configuracion
+        <br>
       operationId: AdmisionController.SoporteConfiguracion
       parameters:
       - in: path
@@ -444,11 +487,109 @@ paths:
           description: '{}'
         "403":
           description: body is empty
+  /admision/suite:
+    get:
+      tags:
+      - admision
+      description: |-
+        Obtiene la suite de inscripción de programa por periodo, dependencia y tipo de inscripción
+        <br>
+      operationId: AdmisionController.GetSuite
+      parameters:
+      - in: query
+        name: periodo_id
+        description: Id del periodo
+        required: true
+        type: integer
+        format: int64
+      - in: query
+        name: dependencia_id
+        description: Id de la dependencia (proyecto curricular)
+        required: true
+        type: integer
+        format: int64
+      - in: query
+        name: tipo_inscripcion_id
+        description: Id del tipo de inscripción
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          description: '{}'
+        "404":
+          description: not found resource
+    post:
+      tags:
+      - admision
+      description: |-
+        Crea una nueva suite de inscripción de programa
+        <br>
+      operationId: AdmisionController.PostSuite
+      parameters:
+      - in: body
+        name: body
+        description: body Crear suite content
+        required: true
+        schema:
+          $ref: '#/definitions/{}'
+      responses:
+        "201":
+          description: '{}'
+        "409":
+          description: conflict
+  /admision/suite/{id}:
+    get:
+      tags:
+      - admision
+      description: |-
+        Obtiene una suite de inscripción por su ID
+        <br>
+      operationId: AdmisionController.GetSuitePorId
+      parameters:
+      - in: path
+        name: id
+        description: Id de la suite
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          description: '{}'
+        "404":
+          description: not found resource
+    put:
+      tags:
+      - admision
+      description: |-
+        Actualiza una suite de inscripción por su ID
+        <br>
+      operationId: AdmisionController.PutSuitePorId
+      parameters:
+      - in: path
+        name: id
+        description: Id de la suite
+        required: true
+        type: integer
+        format: int64
+      - in: body
+        name: body
+        description: body Actualizar suite content
+        required: true
+        schema:
+          $ref: '#/definitions/{}'
+      responses:
+        "200":
+          description: '{}'
+        "403":
+          description: body is empty
   /codificacion/admitidos/:
     get:
       tags:
       - codificacion
-      description: get admitidos por id de proyecto y periodo
+      description: |-
+        get admitidos por id de proyecto y periodo
+        <br>
       operationId: CodificacionController.GetAdmitidos
       parameters:
       - in: query
@@ -489,7 +630,9 @@ paths:
     post:
       tags:
       - codificacion
-      description: Guardar códigos
+      description: |-
+        Guardar códigos
+        <br>
       operationId: CodificacionController.PostGuardarCodigos
       parameters:
       - in: body
@@ -507,7 +650,9 @@ paths:
     post:
       tags:
       - codificacion
-      description: Generar códigos
+      description: |-
+        Generar códigos
+        <br>
       operationId: CodificacionController.PostGenerarCodigos
       parameters:
       - in: body
@@ -531,7 +676,9 @@ paths:
     get:
       tags:
       - gestion-correos
-      description: Endpoint para sugerencias de correos institucional sin homonimo
+      description: |-
+        Endpoint para sugerencias de correos institucional sin homonimo
+        <br>
       operationId: GestionCorreosController.SugerenciaCorreoInstitucional
       parameters:
       - in: query
@@ -557,7 +704,9 @@ paths:
     get:
       tags:
       - liquidacion
-      description: get Liquidacion by id
+      description: |-
+        get Liquidacion by id
+        <br>
       operationId: LiquidacionController.GetLiquidacion
       parameters:
       - in: path
@@ -575,7 +724,9 @@ paths:
     post:
       tags:
       - liquidacion
-      description: create Liquidacion
+      description: |-
+        create Liquidacion
+        <br>
       operationId: LiquidacionController.Create
       parameters:
       - in: body
@@ -595,7 +746,9 @@ paths:
     put:
       tags:
       - liquidacion
-      description: update the Liquidacion
+      description: |-
+        update the Liquidacion
+        <br>
       operationId: LiquidacionController.Put
       parameters:
       - in: path
@@ -619,7 +772,9 @@ paths:
     delete:
       tags:
       - liquidacion
-      description: delete the Liquidacion
+      description: |-
+        delete the Liquidacion
+        <br>
       operationId: LiquidacionController.Delete
       parameters:
       - in: path
@@ -636,7 +791,9 @@ paths:
     post:
       tags:
       - liquidacion
-      description: create InformeLiquidacionPosgrado
+      description: |-
+        create InformeLiquidacionPosgrado
+        <br>
       operationId: LiquidacionController.Create
       parameters:
       - in: body
@@ -656,7 +813,9 @@ paths:
     post:
       tags:
       - liquidacion
-      description: create InformeLiquidacionPregrado
+      description: |-
+        create InformeLiquidacionPregrado
+        <br>
       operationId: LiquidacionController.Create
       parameters:
       - in: body
@@ -676,7 +835,9 @@ paths:
     get:
       tags:
       - liquidacion
-      description: get Liquidacion
+      description: |-
+        get Liquidacion
+        <br>
       operationId: LiquidacionController.GetAll
       parameters:
       - in: query
@@ -693,7 +854,8 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
@@ -714,7 +876,9 @@ paths:
     get:
       tags:
       - reporte
-      description: get Reportes
+      description: |-
+        get Reportes
+        <br>
       operationId: ReportesController.GetAll
       parameters:
       - in: query
@@ -739,12 +903,15 @@ paths:
     post:
       tags:
       - reporte
-      description: Crear reportes dinamicos
+      description: |-
+        Crear reportes dinamicos
+        <br>
       operationId: ReportesController.GenerarReportes
       parameters:
       - in: body
         name: body
-        description: body con la información de las filas a eliminar el proeycto y el periodo
+        description: body con la información de las filas a eliminar el proeycto y
+          el periodo
         required: true
         schema:
           $ref: '#/definitions/{}'
@@ -759,7 +926,9 @@ paths:
     put:
       tags:
       - reporte
-      description: update the Reportes
+      description: |-
+        update the Reportes
+        <br>
       operationId: ReportesController.Put
       parameters:
       - in: path
@@ -783,7 +952,9 @@ paths:
     delete:
       tags:
       - reporte
-      description: delete the Reportes
+      description: |-
+        delete the Reportes
+        <br>
       operationId: ReportesController.Delete
       parameters:
       - in: path
@@ -800,7 +971,9 @@ paths:
     get:
       tags:
       - reporte
-      description: get Reportes
+      description: |-
+        get Reportes
+        <br>
       operationId: ReportesController.GetInscripcionEvaluacionReporte
       parameters:
       - in: query
@@ -820,6 +993,32 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/models.Reportes'
+        "403":
+          description: ""
+  /reporte/reporte-caracterizacion:
+    get:
+      tags:
+      - reporte
+      description: |-
+        Reportes de Caracterización
+        <br>
+      operationId: ReportesController.ReporteCaracterizacion
+      parameters:
+      - in: query
+        name: id_periodo
+        description: Id del periodo
+        required: true
+        type: integer
+        format: int64
+      - in: query
+        name: id_proyecto
+        description: Id del proyecto
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          description: '{}'
         "403":
           description: ""
 definitions:
