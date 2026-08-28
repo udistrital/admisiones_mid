@@ -5,6 +5,17 @@ type Tag struct {
 	Required bool
 }
 
+type SuiteInscripcion struct {
+	Id                float64 `json:"Id"`
+	Activo            bool    `json:"Activo"`
+	DependenciaId     float64 `json:"DependenciaId"`
+	ListaTags         string  `json:"ListaTags"`
+	PeriodoId         float64 `json:"PeriodoId"`
+	TipoInscripcionId float64 `json:"TipoInscripcionId"`
+	FechaCreacion     string  `json:"FechaCreacion,omitempty"`
+	FechaModificacion string  `json:"FechaModificacion,omitempty"`
+}
+
 var TagsInscripcionPrograma = map[string]Tag{
 	"info_persona": {
 		Selected: false,
