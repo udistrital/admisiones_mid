@@ -1618,16 +1618,50 @@ func reporteInscritosPorPrograma(infoReporte models.ReporteEstructura) requestre
 		// "Puntaje"
 		)
 
-		//Hacer consulta especifica para estado ADMITIDO U OPCIONADO
+		//Hacer consultas separadas para evitar depender de __in con OR en el backend
+		var inscripcionesAdmitidas []map[string]interface{}
+		var inscripcionesOpcionadas []map[string]interface{}
+		var inscripcionesAdmitidasOpcionadas []map[string]interface{}
+
 		errInscripciones = request.GetJson(
 			beego.AppConfig.String("InscripcionService")+
-				fmt.Sprintf("inscripcion?query=EstadoInscripcionId.CodigoAbreviacion__in:ADM|OPC,Activo:true,ProgramaAcademicoId:%v,PeriodoId:%v&limit=0", //,TipoInscripcionId__Id:%v&limit=0",
+				fmt.Sprintf("inscripcion?query=EstadoInscripcionId.CodigoAbreviacion:ADM,Activo:true,ProgramaAcademicoId:%v,PeriodoId:%v&limit=0",
 					infoReporte.Proyecto,
 					infoReporte.Periodo,
-					// infoReporte.TipoInscripcion
 				),
-			&inscripciones)
-		if errInscripciones == nil && len(inscripciones) == 0 {
+			&inscripcionesAdmitidas)
+		if errInscripciones == nil {
+			inscripcionesAdmitidasOpcionadas = append(inscripcionesAdmitidasOpcionadas, inscripcionesAdmitidas...)
+		}
+
+		errInscripciones = request.GetJson(
+			beego.AppConfig.String("InscripcionService")+
+				fmt.Sprintf("inscripcion?query=EstadoInscripcionId.CodigoAbreviacion:OPC,Activo:true,ProgramaAcademicoId:%v,PeriodoId:%v&limit=0",
+					infoReporte.Proyecto,
+					infoReporte.Periodo,
+				),
+			&inscripcionesOpcionadas)
+		if errInscripciones == nil {
+			inscripcionesAdmitidasOpcionadas = append(inscripcionesAdmitidasOpcionadas, inscripcionesOpcionadas...)
+		}
+
+		seen := map[string]bool{}
+		inscripciones = make([]map[string]interface{}, 0, len(inscripcionesAdmitidasOpcionadas))
+		for _, inscripcion := range inscripcionesAdmitidasOpcionadas {
+			if len(inscripcion) == 0 {
+				continue
+			}
+			id := fmt.Sprintf("%v", inscripcion["Id"])
+			if !seen[id] {
+				seen[id] = true
+				inscripciones = append(inscripciones, inscripcion)
+			}
+		}
+
+		if errInscripciones != nil && len(inscripciones) == 0 {
+			return requestresponse.APIResponseDTO(false, 500, nil, "Error al consultar inscripciones admitidas u opcionadas en InscripcionService: "+errInscripciones.Error())
+		}
+		if len(inscripciones) == 0 {
 			return requestresponse.APIResponseDTO(false, 404, nil, "No se encontraron inscripciones admitidas u opcionadas para el periodo y programa proporcionados")
 		}
 	} else if infoReporte.TipoReporte == 3 {
