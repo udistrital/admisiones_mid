@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/astaxie/beego"
@@ -28,7 +29,13 @@ func GetAdmitidos(idPeriodo int64, nivel string, idProyecto int64, periodoValor 
 		periodoValor = strings.ReplaceAll(periodoValor, "-", "")
 	}
 
-	compareCodigo := fmt.Sprintf("%v%v", periodoValor, proyectoCodigo)
+	codigoProyecto, err := strconv.Atoi(strings.TrimSpace(strings.ReplaceAll(proyectoCodigo, "\"", "")))
+	if err != nil {
+		return requestresponse.APIResponseDTO(false, 400, nil, "proyectoCodigo inválido")
+	}
+
+	proyectoCodigoFmt := fmt.Sprintf("%03d", codigoProyecto)
+	compareCodigo := fmt.Sprintf("%v%v", periodoValor, proyectoCodigoFmt)
 	compareCodigo = strings.ReplaceAll(compareCodigo, "\"", "")
 
 	if nivel == "Pregrado" {
