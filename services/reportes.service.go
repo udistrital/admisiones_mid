@@ -229,7 +229,7 @@ func ListadoInscripcionEvaluacion(idPeriodo int64, idProyecto int64) (APIRespons
 	//Consulta Periodo
 	errPeriodo := request.GetJson(beego.AppConfig.String("ParametrosService")+"periodo?query=Id:"+strconv.FormatInt(idPeriodo, 10), &Periodo)
 	if errPeriodo != nil {
-		return requestresponse.APIResponseDTO(false, 500, "Error en consultar Periodo: "+errPeriodo.Error())
+		return requestresponse.APIResponseDTO(false, 500, nil, "Error al consultar el periodo en ParametrosService: "+errPeriodo.Error())
 	}
 
 	if data, ok := Periodo["Data"].([]interface{}); ok && len(data) > 0 {
@@ -241,12 +241,12 @@ func ListadoInscripcionEvaluacion(idPeriodo int64, idProyecto int64) (APIRespons
 	//Consulta Proyecto
 	errProyecto := request.GetJson(beego.AppConfig.String("ProyectoAcademicoService")+"proyecto_academico_institucion/"+strconv.FormatInt(idProyecto, 10), &ProyectoAcademico)
 	if errProyecto != nil {
-		return requestresponse.APIResponseDTO(false, 500, "Error en consultar Proyecto Academico: "+errProyecto.Error())
+		return requestresponse.APIResponseDTO(false, 500, nil, "Error al consultar el proyecto academico en ProyectoAcademicoService: "+errProyecto.Error())
 	}
 
 	errRequisitos := request.GetJson(beego.AppConfig.String("EvaluacionInscripcionService")+"/requisito_programa_academico?query=PeriodoId:"+strconv.FormatInt(idPeriodo, 10)+",ProgramaAcademicoId:"+strconv.FormatInt(idProyecto, 10)+"&limit=0", &requisitos)
 	if errRequisitos != nil {
-		return requestresponse.APIResponseDTO(false, 500, "Error en consultar Requisitos: "+errRequisitos.Error())
+		return requestresponse.APIResponseDTO(false, 500, nil, "Error al consultar los requisitos en EvaluacionInscripcionService: "+errRequisitos.Error())
 	}
 
 	//Organizar Requisitos
@@ -281,7 +281,10 @@ func ListadoInscripcionEvaluacion(idPeriodo int64, idProyecto int64) (APIRespons
 	//Consulta Inscripciones correspondientes al periodo y proyecto
 	errInscripcion := request.GetJson(beego.AppConfig.String("InscripcionService")+"inscripcion?query=Activo:true,PeriodoId:"+strconv.FormatInt(idPeriodo, 10)+",ProgramaAcademicoId:"+strconv.FormatInt(idProyecto, 10)+"&sortby=Id&order=asc&limit=0", &inscripcion)
 	if errInscripcion != nil {
-		return requestresponse.APIResponseDTO(false, 500, "Error en consultar Inscripciones: "+errInscripcion.Error())
+		return requestresponse.APIResponseDTO(false, 500, nil, "Error al consultar las inscripciones en InscripcionService: "+errInscripcion.Error())
+	}
+	if len(inscripcion) == 0 {
+		return requestresponse.APIResponseDTO(false, 404, nil, "No se encontraron inscripciones activas para el periodo y programa proporcionados")
 	}
 
 	//Se mapea
@@ -302,13 +305,13 @@ func ListadoInscripcionEvaluacion(idPeriodo int64, idProyecto int64) (APIRespons
 		//Consulta persona
 		errConsultarPersona := request.GetJson(beego.AppConfig.String("TerceroMid")+"personas/"+strconv.FormatFloat(inscripcion.(map[string]interface{})["PersonaId"].(float64), 'f', -1, 64), &consultaPorPersona)
 		if errConsultarPersona != nil {
-			return requestresponse.APIResponseDTO(false, 500, "Error en consultar persona: "+errConsultarPersona.Error())
+			return requestresponse.APIResponseDTO(false, 500, nil, "Error al consultar la persona en TerceroMid: "+errConsultarPersona.Error())
 		}
 
 		//Consulta detalle evaluacion
 		errEvaluacion := request.GetJson(beego.AppConfig.String("EvaluacionInscripcionService")+"detalle_evaluacion?query=InscripcionId:"+idInscripcion, &detalleEvaluacion)
 		if errEvaluacion != nil {
-			return requestresponse.APIResponseDTO(false, 500, "Error en consultar evaluacion: "+errEvaluacion.Error())
+			return requestresponse.APIResponseDTO(false, 500, nil, "Error al consultar la evaluacion en EvaluacionInscripcionService: "+errEvaluacion.Error())
 		}
 
 		for _, detalle := range detalleEvaluacion.([]interface{}) {
@@ -1105,14 +1108,14 @@ func InformeLiquidacionPregrado(data []byte) (APIResponseDTO requestresponse.API
 
 func errEmiter(errData error, infoData ...string) requestresponse.APIResponse {
 	if errData != nil {
-		return requestresponse.APIResponseDTO(false, 400, nil, errData.Error())
+		return requestresponse.APIResponseDTO(false, 500, nil, errData.Error())
 	}
 
 	if len(infoData) > 0 && (infoData[0] == "[map[]]" || infoData[0] == "map[]") {
-		return requestresponse.APIResponseDTO(false, 404, nil, "No se encontraron datos")
+		return requestresponse.APIResponseDTO(false, 404, nil, "No se encontraron datos para generar el reporte")
 	}
 
-	return requestresponse.APIResponseDTO(false, 400, "nil")
+	return requestresponse.APIResponseDTO(false, 400, nil, "Error no especificado al generar el reporte")
 }
 
 func GenerarReporteCodigos(idPeriodo int64, idProyecto int64) requestresponse.APIResponse {
@@ -1476,7 +1479,7 @@ func ReporteDinamico(data []byte) requestresponse.APIResponse {
 		}
 
 	} else {
-		respuesta = requestresponse.APIResponseDTO(false, 400, nil)
+		respuesta = requestresponse.APIResponseDTO(false, 400, nil, "Error al decodificar el reporte dinamico")
 	}
 
 	return respuesta
@@ -1516,12 +1519,12 @@ func reporteInscritosPorPrograma(infoReporte models.ReporteEstructura) requestre
 	//Obtener proyecto y facultad
 	proyecto, facultad, err := obtenerInfoProyectoyFacultad(fmt.Sprintf("%v", infoReporte.Proyecto))
 	if err != nil || fmt.Sprintf("%v", proyecto) == "map[]" || fmt.Sprintf("%v", facultad) == "map[]" {
-		return errEmiter(err, fmt.Sprintf("%v", proyecto), fmt.Sprintf("%v", facultad))
+		return requestresponse.APIResponseDTO(false, 500, nil, "Error al consultar proyecto o facultad para el reporte de transferencias/reintegros: "+fmt.Sprintf("%v", err))
 	}
 
 	periodo, err := obtenerInfoPeriodo(fmt.Sprintf("%v", infoReporte.Periodo))
 	if err != nil || fmt.Sprintf("%v", periodo) == "map[]" {
-		return errEmiter(err, fmt.Sprintf("%v", periodo))
+		return requestresponse.APIResponseDTO(false, 500, nil, "Error al consultar el periodo para el reporte de transferencias/reintegros: "+fmt.Sprintf("%v", err))
 	}
 
 	//Primer o segundo semestre segun el ciclo
@@ -1584,6 +1587,9 @@ func reporteInscritosPorPrograma(infoReporte models.ReporteEstructura) requestre
 		if errInscripciones == nil {
 			inscripcionesObservacion = append(inscripcionesObservacion, inscripcionesObservadas...)
 		}
+		if errInscripciones != nil && len(inscripcionesObservacion) == 0 {
+			return requestresponse.APIResponseDTO(false, 500, nil, "Error al consultar inscripciones en InscripcionService: "+errInscripciones.Error())
+		}
 
 		//Eliminar duplicados y mapas vacíos
 		seen := map[string]bool{}
@@ -1597,6 +1603,9 @@ func reporteInscritosPorPrograma(infoReporte models.ReporteEstructura) requestre
 				seen[id] = true
 				inscripciones = append(inscripciones, inscripcion)
 			}
+		}
+		if len(inscripciones) == 0 {
+			return requestresponse.APIResponseDTO(false, 404, nil, "No se encontraron inscripciones completas o con observación para el periodo y programa proporcionados")
 		}
 
 	} else if infoReporte.TipoReporte == 2 {
@@ -1618,6 +1627,9 @@ func reporteInscritosPorPrograma(infoReporte models.ReporteEstructura) requestre
 					// infoReporte.TipoInscripcion
 				),
 			&inscripciones)
+		if errInscripciones == nil && len(inscripciones) == 0 {
+			return requestresponse.APIResponseDTO(false, 404, nil, "No se encontraron inscripciones admitidas u opcionadas para el periodo y programa proporcionados")
+		}
 	} else if infoReporte.TipoReporte == 3 {
 		//Añadir headers no compartidos
 		dataHeader["Indices"] = append(dataHeader["Indices"].([]interface{}),
@@ -1626,6 +1638,9 @@ func reporteInscritosPorPrograma(infoReporte models.ReporteEstructura) requestre
 
 		//Hacer consulta especifica para aspirantes
 		errInscripciones = request.GetJson(beego.AppConfig.String("InscripcionService")+fmt.Sprintf("inscripcion?query=Activo:true,ProgramaAcademicoId:%v,PeriodoId:%v,TipoInscripcionId__Id:%v&limit=0", infoReporte.Proyecto, infoReporte.Periodo, infoReporte.TipoInscripcion), &inscripciones)
+		if errInscripciones == nil && len(inscripciones) == 0 {
+			return requestresponse.APIResponseDTO(false, 404, nil, "No se encontraron aspirantes para el periodo, programa y tipo de inscripción proporcionados")
+		}
 	} else {
 		//Añadir headers no compartidos
 		dataHeader["Indices"] = append(dataHeader["Indices"].([]interface{}),
@@ -1634,6 +1649,9 @@ func reporteInscritosPorPrograma(infoReporte models.ReporteEstructura) requestre
 
 		//Hacer consulta sin filtrar por tipo de inscripción (TipoReporte 0)
 		errInscripciones = request.GetJson(beego.AppConfig.String("InscripcionService")+fmt.Sprintf("inscripcion?query=Activo:true,ProgramaAcademicoId:%v,PeriodoId:%v&limit=0", infoReporte.Proyecto, infoReporte.Periodo), &inscripciones)
+		if errInscripciones == nil && len(inscripciones) == 0 {
+			return requestresponse.APIResponseDTO(false, 404, nil, "No se encontraron inscripciones activas para el periodo y programa proporcionados")
+		}
 	}
 
 	//Si existen inscripciones entonces
@@ -1645,7 +1663,7 @@ func reporteInscritosPorPrograma(infoReporte models.ReporteEstructura) requestre
 			var personaResponse map[string]interface{}
 			errPersona := request.GetJson(beego.AppConfig.String("TerceroMid")+fmt.Sprintf("personas/%v", inscripcion["PersonaId"]), &personaResponse)
 			if errPersona != nil || personaResponse["Data"] == nil {
-				continue
+				return requestresponse.APIResponseDTO(false, 500, nil, "Error al consultar la persona en TerceroMid: "+fmt.Sprintf("%v", errPersona))
 			}
 			personaData := personaResponse["Data"].(map[string]interface{})
 
@@ -1985,12 +2003,12 @@ func reporteTransferenciasReintegros(infoReporte models.ReporteEstructura) reque
 	//Obtener proyecto y facultad
 	proyecto, facultad, err := obtenerInfoProyectoyFacultad(fmt.Sprintf("%v", infoReporte.Proyecto))
 	if err != nil || fmt.Sprintf("%v", proyecto) == "map[]" || fmt.Sprintf("%v", facultad) == "map[]" {
-		return errEmiter(err, fmt.Sprintf("%v", proyecto), fmt.Sprintf("%v", facultad))
+		return requestresponse.APIResponseDTO(false, 500, nil, "Error al consultar proyecto/facultad para transferencias o reintegros en ProyectoAcademicoService/OikosService: "+fmt.Sprintf("%v", err))
 	}
 
 	periodo, err := obtenerInfoPeriodo(fmt.Sprintf("%v", infoReporte.Periodo))
 	if err != nil || fmt.Sprintf("%v", periodo) == "map[]" {
-		return errEmiter(err, fmt.Sprintf("%v", periodo))
+		return requestresponse.APIResponseDTO(false, 500, nil, "Error al consultar el periodo para transferencias o reintegros en ParametrosService: "+fmt.Sprintf("%v", err))
 	}
 
 	//Primer o segundo semestre segun el ciclo
@@ -2021,8 +2039,11 @@ func reporteTransferenciasReintegros(infoReporte models.ReporteEstructura) reque
 
 	var inscripciones []map[string]interface{}
 	errInscripciones := request.GetJson(beego.AppConfig.String("InscripcionService")+fmt.Sprintf("inscripcion?query=Activo:true,ProgramaAcademicoId:%v,PeriodoId:%v,TipoInscripcionId.CodigoAbreviacion:REING&sortby=Id&order=asc&limit=0", infoReporte.Proyecto, infoReporte.Periodo), &inscripciones)
-	if errInscripciones != nil || fmt.Sprintf("%v", inscripciones) == "[map[]]" {
-		return requestresponse.APIResponseDTO(false, 400, nil, "Falla inscripciones")
+	if errInscripciones != nil {
+		return requestresponse.APIResponseDTO(false, 500, nil, "Error al consultar las inscripciones de reingreso en InscripcionService: "+errInscripciones.Error())
+	}
+	if fmt.Sprintf("%v", inscripciones) == "[map[]]" || len(inscripciones) == 0 {
+		return requestresponse.APIResponseDTO(false, 404, nil, "No se encontraron inscripciones de reingreso para el periodo y programa proporcionados")
 	}
 
 	for _, inscripcion := range inscripciones {
@@ -2032,7 +2053,7 @@ func reporteTransferenciasReintegros(infoReporte models.ReporteEstructura) reque
 		var personaResponse map[string]interface{}
 		errPersona := request.GetJson(beego.AppConfig.String("TerceroMid")+fmt.Sprintf("personas/%v", inscripcion["PersonaId"]), &personaResponse)
 		if errPersona != nil || personaResponse["Data"] == nil {
-			return errEmiter(errPersona)
+			return requestresponse.APIResponseDTO(false, 500, nil, "Error al consultar la persona en TerceroMid para el reporte de transferencias/reintegros: "+fmt.Sprintf("%v", errPersona))
 		}
 		personaData := personaResponse["Data"].(map[string]interface{})
 
@@ -2052,6 +2073,8 @@ func reporteTransferenciasReintegros(infoReporte models.ReporteEstructura) reque
 			if strings.TrimSpace(recibo.FechaPagado) != "" {
 				reciboPago = fmt.Sprintf("%v", recibo.FechaPagado)
 			}
+		} else if errRecibo != nil {
+			return requestresponse.APIResponseDTO(false, 500, nil, "Error al consultar el recibo en ConsultarReciboJbpmService para la inscripcion "+fmt.Sprintf("%v", inscripcion["Id"])+": "+errRecibo.Error())
 		}
 
 		inscrito := []interface{}{
@@ -2157,8 +2180,10 @@ func generarXlsxyPdfIncripciones(infoReporte models.ReporteEstructura, inscritos
 
 	//Agregar datos de la cabecera
 
-	if infoReporte.TipoReporte == 1 {
-		file.SetCellValue("Hoja1", "A5", fmt.Sprintf("LISTADO DE MATRICULADOS  PARA EL %v SEMESTRE ACADÉMICO DEL AÑO %v", dataHeader["Semestre"], dataHeader["Año"]))
+	if infoReporte.TipoReporte == 0 {
+		file.SetCellValue("Hoja1", "A5", fmt.Sprintf("LISTADO DE TODOS LOS ASPIRNATES PARA EL %v SEMESTRE ACADÉMICO DEL AÑO %v", dataHeader["Semestre"], dataHeader["Año"]))
+	} else if infoReporte.TipoReporte == 1 {
+		file.SetCellValue("Hoja1", "A5", fmt.Sprintf("LISTADO DE INSCRITOS  PARA EL %v SEMESTRE ACADÉMICO DEL AÑO %v", dataHeader["Semestre"], dataHeader["Año"]))
 	} else if infoReporte.TipoReporte == 2 {
 		file.SetCellValue("Hoja1", "A5", fmt.Sprintf("LISTADO DE ADMITIDOS  PARA EL %v SEMESTRE ACADÉMICO DEL AÑO %v", dataHeader["Semestre"], dataHeader["Año"]))
 	} else if infoReporte.TipoReporte == 3 {
@@ -2170,7 +2195,7 @@ func generarXlsxyPdfIncripciones(infoReporte models.ReporteEstructura, inscritos
 	} else if infoReporte.TipoReporte == 7 {
 		file.SetCellValue("Hoja1", "A5", fmt.Sprintf("LISTADO DE REINTEGROS  PARA EL %v SEMESTRE ACADÉMICO DEL AÑO %v", dataHeader["Semestre"], dataHeader["Año"]))
 	}
-	file.SetCellValue("Hoja1", "A6", fmt.Sprintf("PROYECTO CURRICULAR %v ORDENADO POR NOMBRE", dataHeader["ProyectoCurricular"]))
+	file.SetCellValue("Hoja1", "A6", fmt.Sprintf("PROYECTO CURRICULAR %v.", dataHeader["ProyectoCurricular"]))
 
 	//Definir ancho dinamico de las columnas
 	//167.5 es el ancho total del reporte
