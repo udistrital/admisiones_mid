@@ -2849,7 +2849,6 @@ func DependenciaPorVinculacion(id_tercero_str string) (APIResponseDTO requestres
 	*/
 	failureAsn := map[string]interface{}{"Success": false, "Status": "404",
 		"Message": "Error service GetDependenciaPorVinculacionTercero: The request contains an incorrect parameter or no record exist", "Data": nil}
-	successAns := map[string]interface{}{"Success": true, "Status": "200", "Message": "Query successful", "Data": nil}
 	/*
 		check validez de id tercero
 	*/
@@ -2891,10 +2890,10 @@ func DependenciaPorVinculacion(id_tercero_str string) (APIResponseDTO requestres
 	/*
 		entrega de respuesta existosa :)
 	*/
-	successAns["Data"] = map[string]interface{}{
-		"DependenciaId": dependencias,
+	data := models.DependenciaVinculacionTercero{
+		DependenciaId: dependencias,
 	}
-	APIResponseDTO = requestresponse.APIResponseDTO(true, 200, successAns)
+	APIResponseDTO = requestresponse.APIResponseDTO(true, 200, data)
 	return APIResponseDTO
 }
 
