@@ -950,10 +950,50 @@ func ObtenerSuite(periodoId, dependenciaId, tipoInscripcionId string) (APIRespon
 	return requestresponse.APIResponseDTO(false, 404, nil, "No se encontró suite para los parámetros dados")
 }
 
+type tagEstado struct {
+	Selected *bool `json:"selected"`
+	Required *bool `json:"required"`
+}
+
+func validarListaTags(body map[string]interface{}) error {
+	raw, ok := body["ListaTags"]
+	if !ok || raw == nil {
+		return errors.New("ListaTags es obligatorio")
+	}
+
+	lista, ok := raw.(string)
+	if !ok || strings.TrimSpace(lista) == "" {
+		return errors.New("ListaTags debe ser un string JSON no vacío")
+	}
+
+	var tags map[string]tagEstado
+	if err := json.Unmarshal([]byte(lista), &tags); err != nil {
+		return fmt.Errorf("ListaTags no es un JSON válido: %w", err)
+	}
+	if tags == nil {
+		return errors.New("ListaTags debe ser un objeto JSON")
+	}
+
+	for nombre, tag := range tags {
+		if tag.Selected == nil || tag.Required == nil {
+			return fmt.Errorf("el tag %q debe incluir selected y required booleanos", nombre)
+		}
+		if !*tag.Selected && *tag.Required {
+			return fmt.Errorf("el tag %q no puede tener required=true cuando selected=false", nombre)
+		}
+	}
+
+	return nil
+}
+
 func CrearSuite(data []byte) (APIResponseDTO requestresponse.APIResponse) {
 	var body map[string]interface{}
 	if err := json.Unmarshal(data, &body); err != nil {
 		return requestresponse.APIResponseDTO(false, 400, nil, "Error al decodificar body: "+err.Error())
+	}
+
+	if err := validarListaTags(body); err != nil {
+		return requestresponse.APIResponseDTO(false, 400, nil, err.Error())
 	}
 
 	periodoId := fmt.Sprintf("%v", body["PeriodoId"])
@@ -1012,6 +1052,10 @@ func ActualizarSuitePorId(id string, data []byte) (APIResponseDTO requestrespons
 	var body map[string]interface{}
 	if err := json.Unmarshal(data, &body); err != nil {
 		return requestresponse.APIResponseDTO(false, 400, nil, "Error al decodificar body: "+err.Error())
+	}
+
+	if err := validarListaTags(body); err != nil {
+		return requestresponse.APIResponseDTO(false, 400, nil, err.Error())
 	}
 
 	var crudResponse map[string]interface{}
